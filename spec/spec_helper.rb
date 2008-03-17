@@ -1,8 +1,8 @@
 
 dir = File.dirname(__FILE__)
-base_dir = "#{dir}/.."
-
-require base_dir + '/googleauthsub.rb'
+base_dir = "#{dir}/../"
+lib_dir = "#{base_dir}lib/"
+require lib_dir + 'googleauthsub.rb'
 
 # Some constants for testing purposes
 INVALID_TOKEN = "CMSdfhfhfjsjskee__d"
