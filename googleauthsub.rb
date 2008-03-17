@@ -34,11 +34,21 @@ module GData
     GOOGLE_AUTHSUB_REVOKE_PATH = GOOGLE_AUTHSUB_BASE_PATH + "/AuthSubRevokeToken"
     GOOGLE_AUTHSUB_TOKEN_INFO_PATH = GOOGLE_AUTHSUB_BASE_PATH + "/AuthSubTokenInfo"
 
-
+# GoogleAuthSub
+# This class handles the Google Authentication for Web Applications API 
+# 
 class GoogleAuthSub
  
   attr_accessor :target, :scope, :session, :secure, :next_url, :token, :sigalg
   
+  # key can be a File, String or OpenSSL::Pkey::RSA
+  # Sets the private key to use for secure sessions. 
+  # This should corespond to the public key sent to Google in 
+  # the registration process. 
+  # For registration details see: 
+  #   http://code.google.com/apis/accounts/docs/RegistrationForWebAppsAuto.html
+  #
+  # This sets the class variable @@pkey to an OpenSSL::Pkey::RSA object
   def self.set_private_key(key)
      case key
        when OpenSSL::PKey::RSA
@@ -54,14 +64,13 @@ class GoogleAuthSub
      end
   end
   
-  # new +opts+
   # Create a new GoogleAuthsub object
-  # Options consist of:
+  # Options specified in +opts+ consist of:
   #
-  # :next_url - (String)  The url to redirect back to once the user has signed in to Google.
-  # :scope_url - (String) The service from Google that you wish to receive data from with this token.
-  # :session - (boolean)  Wether the token is able to be used to get a session token or is just one use.
-  # :secure - (boolean) Wether the token can be used for sessions.
+  # * :next_url - (String)  The url to redirect back to once the user has signed in to Google.
+  # * :scope_url - (String) The service from Google that you wish to receive data from with this token.
+  # * :session - (boolean)  Wether the token is able to be used to get a session token or is just one use.
+  # * :secure - (boolean) Wether the token can be used for sessions.
   #
   def initialize(opts = {})
     self.next_url = opts[:next_url] || ''
@@ -71,9 +80,7 @@ class GoogleAuthSub
     self.sigalg = "rsa-sha1"
   end
   
-  # request_url
-  #
-  # This returns a URI::HTTPS object which contains the url to request a token from.
+  # This returns a URI::HTTPS object which contains the Google url to request a token from.
   def request_url
      query = "next=" << @next_url << "&scope=" << @scope << "&session="<<
              (session_token? ? '1' : '0')<< "&secure="<< (secure_token? ? '1' : '0')
@@ -81,27 +88,25 @@ class GoogleAuthSub
      URI::HTTPS.build({:host => GOOGLE_HOST_URL, :path => GOOGLE_AUTHSUB_REQUEST_PATH, :query => query })
   end
   
-  # receive_token
+  # +url+ :the URL received from Google once the user has signed in.
   #
   # This method extracts the token from the request url that Google
   # sends the user back to. 
   # This url will be like: http://www.example.com/next?Token=CMDshfjfkeodf
   # In Rails you don't need this method, just use 
-  #                 GoogleAuthsub#token=params[:token]
+  # +GoogleAuthsub#token=params[:token]+
   # 
   def receive_token(url)
     q = url.query.match(/Token=(.*)/)
     @token = q[1] if !q.nil?
   end
   
-  # session_token?
-  # true if this token can be exchanged for a session token
+  # Returns true if this token can be exchanged for a session token
   def session_token?
     session == true
   end
   
-  # secure_token?
-  # true if the token is used for secure sessions
+  # Returns true if the token is used for secure sessions
   def secure_token?
     secure == true
   end
@@ -153,19 +158,22 @@ class GoogleAuthSub
     return info
   end
   
-  
+  # get +url+
+  # Does a HTTP GET request to Google using the AuthSub token.
+  # This returns a Net::HTTPResponse object.
   def get(url)
      authsub_http_request(Net::HTTP::Get,url)
   end
-
+  # post +url+
+  # Does a HTTP POST request to Google using the AuthSub token.
+  # This returns a Net::HTTPResponse object.
   def post(url)
      authsub_http_request(Net::HTTP::Post,url)
   end
   
-  
   private
   
-  def authsub_http_request(method, u)
+  def authsub_http_request(method, u) #:nodoc:
     case u
       when String 
         # Add scope
@@ -197,7 +205,7 @@ class GoogleAuthSub
   end
 
   # FIXME SIGN DATA NOT TOKEN!!
-  def authorization_header(request, url)
+  def authorization_header(request, url) 
     case secure_token?
     when false
       return "AuthSub token=\"#{@token}\""

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>request_url (GData::GoogleAuthSub)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File googleauthsub.rb, line 84</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">request_url</span>
+     <span class="ruby-identifier">query</span> = <span class="ruby-value str">&quot;next=&quot;</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-ivar">@next_url</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-value str">&quot;&amp;scope=&quot;</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-ivar">@scope</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-value str">&quot;&amp;session=&quot;</span><span class="ruby-operator">&lt;&lt;</span>
+             (<span class="ruby-identifier">session_token?</span> <span class="ruby-value">? </span><span class="ruby-value str">'1'</span> <span class="ruby-operator">:</span> <span class="ruby-value str">'0'</span>)<span class="ruby-operator">&lt;&lt;</span> <span class="ruby-value str">&quot;&amp;secure=&quot;</span><span class="ruby-operator">&lt;&lt;</span> (<span class="ruby-identifier">secure_token?</span> <span class="ruby-value">? </span><span class="ruby-value str">'1'</span> <span class="ruby-operator">:</span> <span class="ruby-value str">'0'</span>)
+     <span class="ruby-identifier">query</span> = <span class="ruby-constant">URI</span>.<span class="ruby-identifier">encode</span>(<span class="ruby-identifier">query</span>)
+     <span class="ruby-constant">URI</span><span class="ruby-operator">::</span><span class="ruby-constant">HTTPS</span>.<span class="ruby-identifier">build</span>({<span class="ruby-identifier">:host</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-constant">GOOGLE_HOST_URL</span>, <span class="ruby-identifier">:path</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-constant">GOOGLE_AUTHSUB_REQUEST_PATH</span>, <span class="ruby-identifier">:query</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">query</span> })
+  <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>
