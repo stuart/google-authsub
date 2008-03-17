@@ -1,0 +1,95 @@
+GoogleAuthSub
+=======
+
+NOTE: This is still in very alpha stages of development. 
+It passes all the mocked specs but has no live testing specs yet. 
+
+Overview:
+
+The GoogleAuthSub class handles interaction with Google via the 
+Account Authentication API (AuthSub). This is for web applications to get data from 
+Google with the user signing in.
+
+For details on the Account Authentication API refer to:
+http://code.google.com/apis/accounts/docs/AuthForWebApps.html
+
+The Google Group can provide some help also: 
+http://groups.google.com/group/Google-Accounts-API
+
+Requirements:
+    For testing you will need the rspec and fake_web gems
+    
+    
+To use:
+
+Non-signed access, single request.
+    1. Create your GoogleAuthSub object.
+            auth = GoogleAuthSub.new(:next_url => "www.example.com/next", 
+                    :scope_url => "http://www.google.com/calendar/feeds")
+    
+    2. Redirect the user to the Google sign in page. request_url gives us the correct url to go to.
+            In rails: 
+                redirect_to auth.request_url
+
+    3. Once the user has successfully logged in they will then be redirected back to the url specified
+        as the :next_url in step 1. In the handler for this the token needs to be extracted.
+        To do this call: 
+            auth.receive_token(url) 
+        or in rails just do: 
+            auth.token=params[:token]
+ 
+    4. Now everything should be set to make a single request with:
+        auth.get(url) or auth.post(url)
+       The url will have the :scope_url prepended to it if not included. 
+       These calls return a Net::HTTPResponse object
+       
+     Once a request has been made the token will no longer be valid and you will have to start from step 2 in 
+     order to make another request.
+       
+Non-signed access with session token.
+    1. Create your GoogleAuthSub object with :session => true.
+         auth = GoogleAuthSub.new(:next_url => "www.example.com/next", 
+            :scope_url => "http://www.google.com/calendar/feeds", 
+            :session => true)
+ 
+    2,3 as per previous example
+    
+    4. Exchange the single use token for a session token.
+        auth.session_token
+        
+    5. Make requests with auth.get and auth.put.
+    
+Secure access with session token.
+    0. Call GoogleAuthSub.set_private_key(key)
+        key can be a certificate file, string or OpenSSL::Pkey::RSA object.
+        This should be the key that the site has registered with Goggle.
+        For details on the registration process see: 
+        http://code.google.com/apis/accounts/docs/RegistrationForWebAppsAuto.html
+        
+    1. Create your GoogleAuthSub object with :session => true.
+        auth = GoogleAuthSub.new(:next_url => "www.example.com/next", 
+            :scope_url => "http://www.google.com/calendar/feeds", 
+            :session => true, :secure=>true)
+    
+    2,3,4,5 as per previous examples
+    
+    The private key is stored as a class variable so there is one instance per app.
+
+Tokens can be revoked with:
+    auth.revoke_token
+
+Token information can be received from Google with:
+    auth.token_info
+    This returns a hash with the keys: :target, :scope and :secure
+    
+    
+TODO:
+    Live tests.
+    Storage of session tokens: ActiveRecord
+    Encryption of tokens.
+    Session token revokation
+    Rails plugin
+    
+Contact the author via stuart.coyle@gmail.com
+
+Copyright (c) 2008 Stuart Coyle, released under the MIT license

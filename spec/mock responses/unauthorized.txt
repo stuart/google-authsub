@@ -1,0 +1,18 @@
+HTTP/1.1 401 Unauthorized
+Content-Type: text/html; charset=UTF-8
+WWW-Authenticate: AuthSub realm="https://www.google.com/accounts/AuthSubRequest"
+Expires: Sat, 15 Mar 2008 00:40:07 GMT
+Cache-Control: private, max-age=0
+Content-Length: 147
+Date: Sat, 15 Mar 2008 00:40:07 GMT
+Server: GFE/1.3
+
+<HTML>
+<HEAD>
+<TITLE>Unauthorized</TITLE>
+</HEAD>
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+<H1>Unauthorized</H1>
+<H2>Error 401</H2>
+</BODY>
+</HTML>

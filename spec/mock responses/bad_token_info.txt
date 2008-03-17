@@ -1,0 +1,11 @@
+HTTP/1.1 200 OK
+Content-Type: text/plain; charset=UTF-8
+Expires: Fri, 14 Mar 2008 10:56:31 GMT
+Cache-Control: private, max-age=0
+Content-Length: 85
+Date: Fri, 14 Mar 2008 10:56:31 GMT
+Server: GFE/1.3
+
+
+Scope=http://www.google.com/calendar/feeds/
+Secure=true
