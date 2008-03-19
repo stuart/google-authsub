@@ -43,12 +43,12 @@ describe GoogleAuthSub do
     @session_token = SESSION_TOKEN
  
     # Various URLs we expect to call
-    @valid_request_url = "https://www.google.com/accounts/AuthSubRequest?next=http://www.example.com/next&scope=http://www.google.com/calendar/feeds&session=0&secure=0"
-    @valid_session_request_url = "https://www.google.com/accounts/AuthSubRequest?next=http://www.example.com/next&scope=http://www.google.com/calendar/feeds&session=1&secure=0"
-    @valid_secure_session_url = "https://www.google.com/accounts/AuthSubRequest?next=http://www.example.com/next&scope=http://www.google.com/calendar/feeds&session=1&secure=1"
-    @session_token_request_url = "https://www.google.com/accounts/AuthSubSessionToken"
-    @token_revoke_url = "https://www.google.com/accounts/AuthSubRevokeToken"
-    @token_info_url = "https://www.google.com/accounts/AuthSubTokenInfo"
+    @valid_request_url = AUTHSUB_REQUEST_URL + "?next=http://www.example.com/next&scope=http://www.google.com/calendar/feeds&session=0&secure=0"
+    @valid_session_request_url = AUTHSUB_REQUEST_URL + "?next=http://www.example.com/next&scope=http://www.google.com/calendar/feeds&session=1&secure=0"
+    @valid_secure_session_url = AUTHSUB_REQUEST_URL + "?next=http://www.example.com/next&scope=http://www.google.com/calendar/feeds&session=1&secure=1"
+    @session_token_request_url = AUTHSUB_SESSION_TOKEN_URL
+    @token_revoke_url = AUTHSUB_REVOKE_TOKEN_URL
+    @token_info_url = AUTHSUB_TOKEN_INFO_URL
     @data_request_url = @test_scope_url + "/default/private/full"
 
     @authsub = GoogleAuthSub.new({:next_url => @test_next_url, :scope_url => @test_scope_url})
@@ -101,12 +101,12 @@ describe GoogleAuthSub do
 
     it 'should raise an error if the scope URL is not a full path' do
       @authsub.scope = "www.google.com/calendar/feeds"
-      lambda { @authsub.request_url }.should raise_error AuthSubError
+      lambda { @authsub.request_url }.should raise_error(AuthSubError)
     end
     
     it "should raise an error if the next_url is not a full path" do
       @authsub.next_url = "www.schedy.com" 
-      lambda { @authsub.request_url }.should raise_error AuthSubError
+      lambda { @authsub.request_url }.should raise_error(AuthSubError)
     end
   end
 
@@ -183,6 +183,7 @@ describe GoogleAuthSub do
       @authsub.receive_token(url)
       @authsub.token.should == @token
     end
+    
   end
 
   describe "Getting a session token from google" do
