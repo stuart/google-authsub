@@ -82,6 +82,9 @@ class GoogleAuthSub
   
   # This returns a URI::HTTPS object which contains the Google url to request a token from.
   def request_url
+     raise "Invalid next URL: #{@next_url}" if !full_url?(@next_url)
+     raise "Invalid scope URL: #{@scope}" if !full_url?(@scope)
+     
      query = "next=" << @next_url << "&scope=" << @scope << "&session="<<
              (session_token? ? '1' : '0')<< "&secure="<< (secure_token? ? '1' : '0')
      query = URI.encode(query)
@@ -224,7 +227,20 @@ class GoogleAuthSub
   def sign_data(data)
      Base64.b64encode(@@pkey.sign(OpenSSL::Digest::SHA1.new, data))
    end
+
+  # Checks wether a URL is a full url, i.e. has scheme, host and path.
+  def full_url?(url)
+    # First check if it is a bad uri
+    begin
+      u = URI.parse(url)
+    rescue URI.InvalidURIError 
+      return false
+    end
+  
+    return false if u.scheme.nil? || u.host.nil? || u.path.nil?
+    true
+  end
+  
 end
-
-
+  
 end

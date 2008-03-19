@@ -23,7 +23,6 @@
 
 require File.dirname(__FILE__) + '/spec_helper'
 require 'fake_web'
-
 require 'net/http'
 require 'openssl'
 
@@ -100,6 +99,15 @@ describe GoogleAuthSub do
       @authsub.request_url.to_s.should == @valid_secure_session_url
      end
 
+    it 'should raise an error if the scope URL is not a full path' do
+      @authsub.scope = "www.google.com/calendar/feeds"
+      lambda { @authsub.request_url }.should raise_error "Invalid scope URL: #{@authsub.scope}"
+    end
+    
+    it "should raise an error if the next_url is not a full path" do
+      @authsub.next_url = "www.schedy.com" 
+      lambda { @authsub.request_url }.should raise_error "Invalid next URL: #{@authsub.next_url}" 
+    end
   end
 
   describe "Token Signatures" do
@@ -124,6 +132,10 @@ describe GoogleAuthSub do
     
     it "should have a signing algorithm" do
       @authsub.should respond_to(:sigalg)
+    end
+    
+    it "should have rsa-sha1 as the sigalg" do
+      @authsub.sigalg.should == 'rsa-sha1'
     end
     
     it "should generate a correct authorization header when not secure" do
