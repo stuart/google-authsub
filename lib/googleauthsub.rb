@@ -34,6 +34,16 @@ module GData
     GOOGLE_AUTHSUB_REVOKE_PATH = GOOGLE_AUTHSUB_BASE_PATH + "/AuthSubRevokeToken"
     GOOGLE_AUTHSUB_TOKEN_INFO_PATH = GOOGLE_AUTHSUB_BASE_PATH + "/AuthSubTokenInfo"
 
+class Error < Exception
+end
+
+class AuthSubError < Error
+  def message
+    "Google Authentication Error"
+  end
+end
+
+
 # GoogleAuthSub
 # This class handles the Google Authentication for Web Applications API 
 # 
@@ -60,7 +70,7 @@ class GoogleAuthSub
          # Get key from a PEM in the form of a string.
          @@pkey = OpenSSL::PKey::RSA.new(key)
        else
-         raise "Private Key in wrong format. Require IO, String or OpenSSL::Pkey::RSA, got #{key.class}"
+         raise AuthSubError, "Private Key in wrong format. Require IO, String or OpenSSL::Pkey::RSA, got #{key.class}"
      end
   end
   
@@ -82,8 +92,8 @@ class GoogleAuthSub
   
   # This returns a URI::HTTPS object which contains the Google url to request a token from.
   def request_url
-     raise "Invalid next URL: #{@next_url}" if !full_url?(@next_url)
-     raise "Invalid scope URL: #{@scope}" if !full_url?(@scope)
+     raise AuthSubError, "Invalid next URL: #{@next_url}" if !full_url?(@next_url)
+     raise AuthSubError, "Invalid scope URL: #{@scope}" if !full_url?(@scope)
      
      query = "next=" << @next_url << "&scope=" << @scope << "&session="<<
              (session_token? ? '1' : '0')<< "&secure="<< (secure_token? ? '1' : '0')
@@ -123,7 +133,7 @@ class GoogleAuthSub
     begin
      @token = get(url).body.match(/^Token=(.*)$/)[1]
    rescue
-     raise "ERROR: Invalid session token response."
+     raise AuthSubError, "Invalid session token response."
    end
   end
   
@@ -155,7 +165,7 @@ class GoogleAuthSub
       info[:scope] = response.body.match(/^Scope=(.*)$/)[1]
       info[:secure] = (response.body.match(/^Secure=(.*)$/)[1].downcase == 'true')
     rescue
-      raise "Google Authsub Error: invalid token info packet received."
+      raise AuthSubError, "Google Authsub Error: invalid token info packet received."
     end
    
     return info
@@ -190,7 +200,7 @@ class GoogleAuthSub
       when URI
         url = u
       else 
-        raise "url must be String or URI, #{url.class} received."
+        raise AuthSubError, "url must be String or URI, #{url.class} received."
     end 
 
     request = method.new(url.path)

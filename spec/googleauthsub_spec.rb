@@ -101,12 +101,12 @@ describe GoogleAuthSub do
 
     it 'should raise an error if the scope URL is not a full path' do
       @authsub.scope = "www.google.com/calendar/feeds"
-      lambda { @authsub.request_url }.should raise_error "Invalid scope URL: #{@authsub.scope}"
+      lambda { @authsub.request_url }.should raise_error AuthSubError
     end
     
     it "should raise an error if the next_url is not a full path" do
       @authsub.next_url = "www.schedy.com" 
-      lambda { @authsub.request_url }.should raise_error "Invalid next URL: #{@authsub.next_url}" 
+      lambda { @authsub.request_url }.should raise_error AuthSubError
     end
   end
 
@@ -214,7 +214,7 @@ describe GoogleAuthSub do
         FakeWeb.register_uri(@session_token_request_url, :response =>  File.dirname(__FILE__)+"/mock responses/revoked_token.txt")
         lambda {
           @authsub.session_token
-        }.should raise_error(RuntimeError)
+        }.should raise_error(AuthSubError)
       end
   end
 
@@ -255,15 +255,14 @@ describe GoogleAuthSub do
     it "should return the info as [:target => target, :scope=> scope, :secure=> secure]" do
       @authsub.token_info.should == {:target=>'http://www.example.com', 
                                              :scope=>'http://www.google.com/calendar/feeds/', 
-                                             :secure=>true}
-                                             
+                                             :secure=>true}                                          
     end
     
     it "should throw an error on an incorrect response from Google" do
       FakeWeb.register_uri(@token_info_url, :response => File.dirname(__FILE__)+"/mock responses/bad_token_info.txt")
       lambda{
         @authsub.token_info
-      }.should raise_error("Google Authsub Error: invalid token info packet received.")
+      }.should raise_error(AuthSubError)
     end
   end
 
