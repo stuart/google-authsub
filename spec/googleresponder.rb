@@ -1,37 +1,23 @@
-#!/usr/local/bin/ruby
-# require 'webrick'
-# require 'webrick/https'
-# 
-# s = WEBrick::HTTPServer.new(
-#   :Port            => 2000,
-#   :DocumentRoot    => Dir::pwd + "/htdocs",
-#   :SSLEnable       => true,
-#   :SSLVerifyClient => ::OpenSSL::SSL::VERIFY_NONE,
-#   :SSLCertName => [ ["C","JP"], ["O","WEBrick.Org"], ["CN", "WWW"] ]
-# )
-# trap("INT"){ s.shutdown }
-# s.start
-# 
-
+#!/usr/bin/env ruby
 
 require 'webrick'
 include WEBrick
 
-s = HTTPServer.new( :Port => 2200 
+s = HTTPServer.new( :Port => 2000,
                     :SSLEnable => true
                   )
 
-# Check the header for Valid Authentication
-class AuthCheckServlet < HTTPServlet::AbstractServlet
+class AuthEchoServlet < HTTPServlet::AbstractServlet
   def do_GET(req, res)
-    req.
-    res.body = ""
+    res.body = req[Authorization]
     res['Content-Type'] = "text/html"
   end
+  
+  def do_PUT(req,res)
+  
+  end
 end
-
-
-s.mount("/accounts", TokenServlet)
+s.mount("/accounts", AuthEchoServlet)
 
 
 trap("INT"){ s.shutdown }
