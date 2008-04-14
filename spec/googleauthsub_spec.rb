@@ -80,6 +80,13 @@ describe GoogleAuthSub do
       @authsub.should respond_to(:post)
     end
     
+    it "should have a put method" do
+      @authsub.should respond_to(:put)
+    end
+    
+    it "should have a delete method" do
+      @authsub.should respond_to(:delete)
+    end
   end
 
   describe "Request method - getting a single use token from Google" do
@@ -322,5 +329,6 @@ describe GoogleAuthSub do
         @authsub.post(@data_request_url).body.should == "This is my wonderful calendar!\nEmpty as usual.\nHire me!!"
       end
   end
+  
   
 end

@@ -183,8 +183,22 @@ class GoogleAuthSub
   def post(url)
      authsub_http_request(Net::HTTP::Post,url)
   end
+  # put +url+
+  # Does a HTTP PUT request to Google using the AuthSub token.
+  # This returns a Net::HTTPResponse object. 
+  def put(url)
+    authsub_http_request(Net::HTTP::Put,url)
+  end 
+  
+  # delete +url+
+  # Does a HTTP DELETE request to Google using the AuthSub token.
+  # This returns a Net::HTTPResponse object.
+  def delete(url)
+    authsub_http_request(Net::HTTP::Delete,url)
+  end
   
   private
+ 
   
   def authsub_http_request(method, u) #:nodoc:
     case u
