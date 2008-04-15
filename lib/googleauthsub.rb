@@ -210,13 +210,15 @@ class GoogleAuthSub
         rescue URI::InvalidURIError
           raise URI::InvalidURIError
         end
-        url = URI.parse(u)
       when URI
         url = u
       else 
         raise AuthSubError, "url must be String or URI, #{url.class} received."
     end 
-
+    
+    if method.superclass != Net::HTTPRequest
+      raise AuthSubError, "method must be a Net::HTTPRequest subclass. #{method} received."
+    end
     request = method.new(url.path)
     request['Authorization'] = authorization_header(request, url)
     connection =  Net::HTTP.new(url.host, url.port)
@@ -243,6 +245,8 @@ class GoogleAuthSub
     end
   end
 
+  # This creates the data string for secure authorisation.
+  # It is this that gets sent.
   def authorization_data(request, url)
     nonce = OpenSSL::BN.rand_range(2**64)
     data = request.method + ' ' + url.to_s + ' ' + Time.now.to_i.to_s + ' ' + nonce.to_s
