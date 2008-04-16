@@ -274,11 +274,6 @@ describe GoogleAuthSub do
     end
   end
 
-  describe "Auto revocation of session tokens" do
-    it "should revoke tokens after specified interval" do
-      #pending "Auto revoke not yet implemented"
-    end
-  end
 
   describe "Get data from google using the token" do
     before do
