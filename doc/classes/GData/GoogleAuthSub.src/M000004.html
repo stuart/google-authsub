@@ -5,15 +5,18 @@
 
 <html>
 <head>
-  <title>receive_token (GData::GoogleAuthSub)</title>
+  <title>new (GData::GoogleAuthSub)</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
   <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre><span class="ruby-comment cmt"># File googleauthsub.rb, line 99</span>
-  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">receive_token</span>(<span class="ruby-identifier">url</span>)
-    <span class="ruby-identifier">q</span> = <span class="ruby-identifier">url</span>.<span class="ruby-identifier">query</span>.<span class="ruby-identifier">match</span>(<span class="ruby-regexp re">/Token=(.*)/</span>)
-    <span class="ruby-ivar">@token</span> = <span class="ruby-identifier">q</span>[<span class="ruby-value">1</span>] <span class="ruby-keyword kw">if</span> <span class="ruby-operator">!</span><span class="ruby-identifier">q</span>.<span class="ruby-identifier">nil?</span>
+  <pre><span class="ruby-comment cmt"># File lib/googleauthsub.rb, line 86</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">opts</span> = {})
+    <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">next_url</span> = <span class="ruby-identifier">opts</span>[<span class="ruby-identifier">:next_url</span>] <span class="ruby-operator">||</span> <span class="ruby-value str">''</span>
+    <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">scope</span> = <span class="ruby-identifier">opts</span>[<span class="ruby-identifier">:scope_url</span>] <span class="ruby-operator">||</span> <span class="ruby-value str">''</span>
+    <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">session</span> = <span class="ruby-identifier">opts</span>[<span class="ruby-identifier">:session</span>] <span class="ruby-operator">||</span> <span class="ruby-keyword kw">false</span>
+    <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">secure</span> = <span class="ruby-identifier">opts</span>[<span class="ruby-identifier">:secure</span>] <span class="ruby-operator">||</span> <span class="ruby-keyword kw">false</span>
+    <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">sigalg</span> = <span class="ruby-identifier">opts</span>[<span class="ruby-identifier">:sigalg</span>] <span class="ruby-operator">||</span> <span class="ruby-value str">&quot;rsa-sha1&quot;</span>
   <span class="ruby-keyword kw">end</span></pre>
 </body>
 </html>

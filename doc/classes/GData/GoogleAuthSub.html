@@ -55,8 +55,12 @@
         <tr class="top-aligned-row">
             <td><strong>In:</strong></td>
             <td>
-                <a href="../../files/googleauthsub_rb.html">
-                googleauthsub.rb
+                <a href="../../files/lib/googleauthsub_rb.html">
+                lib/googleauthsub.rb
+                </a>
+        <br />
+                <a href="../../files/spec/spec_helper_rb.html">
+                spec/spec_helper.rb
                 </a>
         <br />
             </td>
@@ -93,17 +97,22 @@ Google Authentication for Web Applications API
       <h3 class="section-bar">Methods</h3>
 
       <div class="name-list">
-      <a href="#M000010">get</a>&nbsp;&nbsp;
-      <a href="#M000002">new</a>&nbsp;&nbsp;
-      <a href="#M000011">post</a>&nbsp;&nbsp;
-      <a href="#M000004">receive_token</a>&nbsp;&nbsp;
-      <a href="#M000003">request_url</a>&nbsp;&nbsp;
-      <a href="#M000008">revoke_token</a>&nbsp;&nbsp;
-      <a href="#M000006">secure_token?</a>&nbsp;&nbsp;
-      <a href="#M000007">session_token</a>&nbsp;&nbsp;
-      <a href="#M000005">session_token?</a>&nbsp;&nbsp;
-      <a href="#M000001">set_private_key</a>&nbsp;&nbsp;
-      <a href="#M000009">token_info</a>&nbsp;&nbsp;
+      <a href="#M000017">auth_data</a>&nbsp;&nbsp;
+      <a href="#M000016">auth_header</a>&nbsp;&nbsp;
+      <a href="#M000015">delete</a>&nbsp;&nbsp;
+      <a href="#M000012">get</a>&nbsp;&nbsp;
+      <a href="#M000004">new</a>&nbsp;&nbsp;
+      <a href="#M000013">post</a>&nbsp;&nbsp;
+      <a href="#M000014">put</a>&nbsp;&nbsp;
+      <a href="#M000006">receive_token</a>&nbsp;&nbsp;
+      <a href="#M000005">request_url</a>&nbsp;&nbsp;
+      <a href="#M000010">revoke_token</a>&nbsp;&nbsp;
+      <a href="#M000008">secure_token?</a>&nbsp;&nbsp;
+      <a href="#M000009">session_token</a>&nbsp;&nbsp;
+      <a href="#M000007">session_token?</a>&nbsp;&nbsp;
+      <a href="#M000003">set_private_key</a>&nbsp;&nbsp;
+      <a href="#M000018">sig</a>&nbsp;&nbsp;
+      <a href="#M000011">token_info</a>&nbsp;&nbsp;
       </div>
     </div>
 
@@ -168,19 +177,19 @@ Google Authentication for Web Applications API
     <div id="methods">
       <h3 class="section-bar">Public Class methods</h3>
 
-      <div id="method-M000002" class="method-detail">
-        <a name="M000002"></a>
+      <div id="method-M000004" class="method-detail">
+        <a name="M000004"></a>
 
         <div class="method-heading">
-          <a href="GoogleAuthSub.src/M000002.html" target="Code" class="method-signature"
-            onclick="popupCode('GoogleAuthSub.src/M000002.html');return false;">
+          <a href="GoogleAuthSub.src/M000004.html" target="Code" class="method-signature"
+            onclick="popupCode('GoogleAuthSub.src/M000004.html');return false;">
           <span class="method-name">new</span><span class="method-args">(opts = {})</span>
           </a>
         </div>
       
         <div class="method-description">
           <p>
-Create a <a href="GoogleAuthSub.html#M000002">new</a> GoogleAuthsub object
+Create a <a href="GoogleAuthSub.html#M000004">new</a> GoogleAuthsub object
 Options specified in <tt>opts</tt> consist of:
 </p>
 <ul>
@@ -192,33 +201,37 @@ in to Google.
 from with this token.
 
 </li>
-<li>:session - (boolean) Wether the token is able to be used to <a
-href="GoogleAuthSub.html#M000010">get</a> a session token or is just one
+<li>:session - (boolean) Whether the token is able to be used to <a
+href="GoogleAuthSub.html#M000012">get</a> a session token or is just one
 use.
 
 </li>
-<li>:secure - (boolean) Wether the token can be used for sessions.
+<li>:secure - (boolean) Whether the token can be used for sessions.
+
+</li>
+<li>:sigalg - (String) Currently not needed, as the Authsub specification only
+has rsa-sha1.
 
 </li>
 </ul>
         </div>
       </div>
 
-      <div id="method-M000001" class="method-detail">
-        <a name="M000001"></a>
+      <div id="method-M000003" class="method-detail">
+        <a name="M000003"></a>
 
         <div class="method-heading">
-          <a href="GoogleAuthSub.src/M000001.html" target="Code" class="method-signature"
-            onclick="popupCode('GoogleAuthSub.src/M000001.html');return false;">
+          <a href="GoogleAuthSub.src/M000003.html" target="Code" class="method-signature"
+            onclick="popupCode('GoogleAuthSub.src/M000003.html');return false;">
           <span class="method-name">set_private_key</span><span class="method-args">(key)</span>
           </a>
         </div>
       
         <div class="method-description">
           <p>
-key can be a File, String or OpenSSL::Pkey::RSA Sets the private key to use
-for secure sessions. This should corespond to the public key sent to Google
-in the registration process. For registration details see:
+<tt>key</tt> can be a File, String or OpenSSL::Pkey::RSA Sets the private
+key to use for secure sessions. This should correspond to the public key
+sent to Google in the registration process. For registration details see:
 </p>
 <pre>
   http://code.google.com/apis/accounts/docs/RegistrationForWebAppsAuto.html
@@ -231,50 +244,125 @@ This sets the class variable @@pkey to an OpenSSL::Pkey::RSA object
 
       <h3 class="section-bar">Public Instance methods</h3>
 
-      <div id="method-M000010" class="method-detail">
-        <a name="M000010"></a>
+      <div id="method-M000017" class="method-detail">
+        <a name="M000017"></a>
 
         <div class="method-heading">
-          <a href="GoogleAuthSub.src/M000010.html" target="Code" class="method-signature"
-            onclick="popupCode('GoogleAuthSub.src/M000010.html');return false;">
+          <a href="GoogleAuthSub.src/M000017.html" target="Code" class="method-signature"
+            onclick="popupCode('GoogleAuthSub.src/M000017.html');return false;">
+          <span class="method-name">auth_data</span><span class="method-args">(method,url)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+check the <a href="GoogleAuthSub.html#M000017">auth_data</a> section of the
+header
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000016" class="method-detail">
+        <a name="M000016"></a>
+
+        <div class="method-heading">
+          <a href="GoogleAuthSub.src/M000016.html" target="Code" class="method-signature"
+            onclick="popupCode('GoogleAuthSub.src/M000016.html');return false;">
+          <span class="method-name">auth_header</span><span class="method-args">(method, url)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+<a href="GoogleAuthSub.html#M000016">auth_header</a> Check what
+authorization header we are sending. method is Net::HTTP::Get or
+Net::HTTP::Post
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000015" class="method-detail">
+        <a name="M000015"></a>
+
+        <div class="method-heading">
+          <a href="GoogleAuthSub.src/M000015.html" target="Code" class="method-signature"
+            onclick="popupCode('GoogleAuthSub.src/M000015.html');return false;">
+          <span class="method-name">delete</span><span class="method-args">(url)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+<a href="GoogleAuthSub.html#M000015">delete</a> <tt>url</tt> Does a HTTP
+DELETE request to Google using the AuthSub token. This returns a
+Net::HTTPResponse object.
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000012" class="method-detail">
+        <a name="M000012"></a>
+
+        <div class="method-heading">
+          <a href="GoogleAuthSub.src/M000012.html" target="Code" class="method-signature"
+            onclick="popupCode('GoogleAuthSub.src/M000012.html');return false;">
           <span class="method-name">get</span><span class="method-args">(url)</span>
           </a>
         </div>
       
         <div class="method-description">
           <p>
-<a href="GoogleAuthSub.html#M000010">get</a> <tt>url</tt> Does a HTTP GET
+<a href="GoogleAuthSub.html#M000012">get</a> <tt>url</tt> Does a HTTP GET
 request to Google using the AuthSub token. This returns a Net::HTTPResponse
 object.
 </p>
         </div>
       </div>
 
-      <div id="method-M000011" class="method-detail">
-        <a name="M000011"></a>
+      <div id="method-M000013" class="method-detail">
+        <a name="M000013"></a>
 
         <div class="method-heading">
-          <a href="GoogleAuthSub.src/M000011.html" target="Code" class="method-signature"
-            onclick="popupCode('GoogleAuthSub.src/M000011.html');return false;">
+          <a href="GoogleAuthSub.src/M000013.html" target="Code" class="method-signature"
+            onclick="popupCode('GoogleAuthSub.src/M000013.html');return false;">
           <span class="method-name">post</span><span class="method-args">(url)</span>
           </a>
         </div>
       
         <div class="method-description">
           <p>
-<a href="GoogleAuthSub.html#M000011">post</a> <tt>url</tt> Does a HTTP POST
+<a href="GoogleAuthSub.html#M000013">post</a> <tt>url</tt> Does a HTTP POST
 request to Google using the AuthSub token. This returns a Net::HTTPResponse
 object.
 </p>
         </div>
       </div>
 
-      <div id="method-M000004" class="method-detail">
-        <a name="M000004"></a>
+      <div id="method-M000014" class="method-detail">
+        <a name="M000014"></a>
 
         <div class="method-heading">
-          <a href="GoogleAuthSub.src/M000004.html" target="Code" class="method-signature"
-            onclick="popupCode('GoogleAuthSub.src/M000004.html');return false;">
+          <a href="GoogleAuthSub.src/M000014.html" target="Code" class="method-signature"
+            onclick="popupCode('GoogleAuthSub.src/M000014.html');return false;">
+          <span class="method-name">put</span><span class="method-args">(url)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+<a href="GoogleAuthSub.html#M000014">put</a> <tt>url</tt> Does a HTTP PUT
+request to Google using the AuthSub token. This returns a Net::HTTPResponse
+object.
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000006" class="method-detail">
+        <a name="M000006"></a>
+
+        <div class="method-heading">
+          <a href="GoogleAuthSub.src/M000006.html" target="Code" class="method-signature"
+            onclick="popupCode('GoogleAuthSub.src/M000006.html');return false;">
           <span class="method-name">receive_token</span><span class="method-args">(url)</span>
           </a>
         </div>
@@ -287,18 +375,18 @@ object.
 This method extracts the token from the request url that Google sends the
 user back to. This url will be like: <a
 href="http://www.example.com/next?Token=CMDshfjfkeodf">www.example.com/next?Token=CMDshfjfkeodf</a>
-In Rails you don&#8216;t need this method, just use
+In Rails applications you don&#8216;t need this method, just use
 +GoogleAuthsub#token=params[:token]+
 </p>
         </div>
       </div>
 
-      <div id="method-M000003" class="method-detail">
-        <a name="M000003"></a>
+      <div id="method-M000005" class="method-detail">
+        <a name="M000005"></a>
 
         <div class="method-heading">
-          <a href="GoogleAuthSub.src/M000003.html" target="Code" class="method-signature"
-            onclick="popupCode('GoogleAuthSub.src/M000003.html');return false;">
+          <a href="GoogleAuthSub.src/M000005.html" target="Code" class="method-signature"
+            onclick="popupCode('GoogleAuthSub.src/M000005.html');return false;">
           <span class="method-name">request_url</span><span class="method-args">()</span>
           </a>
         </div>
@@ -311,31 +399,31 @@ token from.
         </div>
       </div>
 
-      <div id="method-M000008" class="method-detail">
-        <a name="M000008"></a>
+      <div id="method-M000010" class="method-detail">
+        <a name="M000010"></a>
 
         <div class="method-heading">
-          <a href="GoogleAuthSub.src/M000008.html" target="Code" class="method-signature"
-            onclick="popupCode('GoogleAuthSub.src/M000008.html');return false;">
+          <a href="GoogleAuthSub.src/M000010.html" target="Code" class="method-signature"
+            onclick="popupCode('GoogleAuthSub.src/M000010.html');return false;">
           <span class="method-name">revoke_token</span><span class="method-args">()</span>
           </a>
         </div>
       
         <div class="method-description">
           <p>
-<a href="GoogleAuthSub.html#M000008">revoke_token</a> This revokes either a
+<a href="GoogleAuthSub.html#M000010">revoke_token</a> This revokes either a
 single use or session token The token will not be able to be used again if
 this call is successful. It returns true on sucess, false on failure.
 </p>
         </div>
       </div>
 
-      <div id="method-M000006" class="method-detail">
-        <a name="M000006"></a>
+      <div id="method-M000008" class="method-detail">
+        <a name="M000008"></a>
 
         <div class="method-heading">
-          <a href="GoogleAuthSub.src/M000006.html" target="Code" class="method-signature"
-            onclick="popupCode('GoogleAuthSub.src/M000006.html');return false;">
+          <a href="GoogleAuthSub.src/M000008.html" target="Code" class="method-signature"
+            onclick="popupCode('GoogleAuthSub.src/M000008.html');return false;">
           <span class="method-name">secure_token?</span><span class="method-args">()</span>
           </a>
         </div>
@@ -347,31 +435,31 @@ Returns true if the token is used for secure sessions
         </div>
       </div>
 
-      <div id="method-M000007" class="method-detail">
-        <a name="M000007"></a>
+      <div id="method-M000009" class="method-detail">
+        <a name="M000009"></a>
 
         <div class="method-heading">
-          <a href="GoogleAuthSub.src/M000007.html" target="Code" class="method-signature"
-            onclick="popupCode('GoogleAuthSub.src/M000007.html');return false;">
+          <a href="GoogleAuthSub.src/M000009.html" target="Code" class="method-signature"
+            onclick="popupCode('GoogleAuthSub.src/M000009.html');return false;">
           <span class="method-name">session_token</span><span class="method-args">()</span>
           </a>
         </div>
       
         <div class="method-description">
           <p>
-<a href="GoogleAuthSub.html#M000007">session_token</a> This method
+<a href="GoogleAuthSub.html#M000009">session_token</a> This method
 exchanges a previously received single use token with a session token.
 Raises error if an invalid response is received.
 </p>
         </div>
       </div>
 
-      <div id="method-M000005" class="method-detail">
-        <a name="M000005"></a>
+      <div id="method-M000007" class="method-detail">
+        <a name="M000007"></a>
 
         <div class="method-heading">
-          <a href="GoogleAuthSub.src/M000005.html" target="Code" class="method-signature"
-            onclick="popupCode('GoogleAuthSub.src/M000005.html');return false;">
+          <a href="GoogleAuthSub.src/M000007.html" target="Code" class="method-signature"
+            onclick="popupCode('GoogleAuthSub.src/M000007.html');return false;">
           <span class="method-name">session_token?</span><span class="method-args">()</span>
           </a>
         </div>
@@ -383,20 +471,37 @@ Returns true if this token can be exchanged for a session token
         </div>
       </div>
 
-      <div id="method-M000009" class="method-detail">
-        <a name="M000009"></a>
+      <div id="method-M000018" class="method-detail">
+        <a name="M000018"></a>
 
         <div class="method-heading">
-          <a href="GoogleAuthSub.src/M000009.html" target="Code" class="method-signature"
-            onclick="popupCode('GoogleAuthSub.src/M000009.html');return false;">
+          <a href="GoogleAuthSub.src/M000018.html" target="Code" class="method-signature"
+            onclick="popupCode('GoogleAuthSub.src/M000018.html');return false;">
+          <span class="method-name">sig</span><span class="method-args">(header)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+extract signature from header
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000011" class="method-detail">
+        <a name="M000011"></a>
+
+        <div class="method-heading">
+          <a href="GoogleAuthSub.src/M000011.html" target="Code" class="method-signature"
+            onclick="popupCode('GoogleAuthSub.src/M000011.html');return false;">
           <span class="method-name">token_info</span><span class="method-args">()</span>
           </a>
         </div>
       
         <div class="method-description">
           <p>
-<a href="GoogleAuthSub.html#M000009">token_info</a> Returns the information
-for the session token as a map {:target, :scope, :secure}
+<a href="GoogleAuthSub.html#M000011">token_info</a> Returns the information
+for the session token from Google. Returns a map {:target, :scope, :secure}
 </p>
         </div>
       </div>

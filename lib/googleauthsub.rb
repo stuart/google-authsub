@@ -93,8 +93,9 @@ class GoogleAuthSub
 
   # This returns a URI::HTTPS object which contains the Google url to request a token from.
   def request_url
-     raise AuthSubError, "Invalid next URL: #{@next_url}" if !full_url?(@next_url)
-     raise AuthSubError, "Invalid scope URL: #{@scope}" if !full_url?(@scope)
+     #FIXME: these currently cause a crash.
+     #raise AuthSubError, "Invalid next URL: #{@next_url}" if !full_url?(@next_url)
+     #raise AuthSubError, "Invalid scope URL: #{@scope}" if !full_url?(@scope)
 
      query = "next=" << @next_url << "&scope=" << @scope << "&session="<<
              (session_token? ? '1' : '0')<< "&secure="<< (secure_token? ? '1' : '0')
@@ -265,7 +266,9 @@ class GoogleAuthSub
     rescue URI.InvalidURIError
       return false
     end
-
+    print u.scheme
+    print u.host
+    print u.path
     return false if u.scheme.nil? || u.host.nil? || u.path.nil?
     true
   end

@@ -5,14 +5,26 @@
 
 <html>
 <head>
-  <title>post (GData::GoogleAuthSub)</title>
+  <title>token_info (GData::GoogleAuthSub)</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
   <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre><span class="ruby-comment cmt"># File googleauthsub.rb, line 170</span>
-  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">post</span>(<span class="ruby-identifier">url</span>)
-     <span class="ruby-identifier">authsub_http_request</span>(<span class="ruby-constant">Net</span><span class="ruby-operator">::</span><span class="ruby-constant">HTTP</span><span class="ruby-operator">::</span><span class="ruby-constant">Post</span>,<span class="ruby-identifier">url</span>)
+  <pre><span class="ruby-comment cmt"># File lib/googleauthsub.rb, line 159</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">token_info</span>
+    <span class="ruby-identifier">url</span> =  <span class="ruby-constant">URI</span><span class="ruby-operator">::</span><span class="ruby-constant">HTTPS</span>.<span class="ruby-identifier">build</span>({<span class="ruby-identifier">:host=</span><span class="ruby-operator">&gt;</span><span class="ruby-constant">GOOGLE_HOST_URL</span>,
+      <span class="ruby-identifier">:path</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-constant">GOOGLE_AUTHSUB_TOKEN_INFO_PATH</span>})
+    <span class="ruby-identifier">response</span> = <span class="ruby-identifier">get</span>(<span class="ruby-identifier">url</span>)
+    <span class="ruby-identifier">info</span> = <span class="ruby-constant">Hash</span>.<span class="ruby-identifier">new</span>
+    <span class="ruby-keyword kw">begin</span>
+      <span class="ruby-identifier">info</span>[<span class="ruby-identifier">:target</span>] = <span class="ruby-identifier">response</span>.<span class="ruby-identifier">body</span>.<span class="ruby-identifier">match</span>(<span class="ruby-regexp re">/^Target=(.*)$/</span>)[<span class="ruby-value">1</span>]
+      <span class="ruby-identifier">info</span>[<span class="ruby-identifier">:scope</span>] = <span class="ruby-identifier">response</span>.<span class="ruby-identifier">body</span>.<span class="ruby-identifier">match</span>(<span class="ruby-regexp re">/^Scope=(.*)$/</span>)[<span class="ruby-value">1</span>]
+      <span class="ruby-identifier">info</span>[<span class="ruby-identifier">:secure</span>] = (<span class="ruby-identifier">response</span>.<span class="ruby-identifier">body</span>.<span class="ruby-identifier">match</span>(<span class="ruby-regexp re">/^Secure=(.*)$/</span>)[<span class="ruby-value">1</span>].<span class="ruby-identifier">downcase</span> <span class="ruby-operator">==</span> <span class="ruby-value str">'true'</span>)
+    <span class="ruby-keyword kw">rescue</span>
+      <span class="ruby-identifier">raise</span> <span class="ruby-constant">AuthSubError</span>, <span class="ruby-value str">&quot;Google Authsub Error: invalid token info packet received.&quot;</span>
+    <span class="ruby-keyword kw">end</span>
+
+    <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">info</span>
   <span class="ruby-keyword kw">end</span></pre>
 </body>
 </html>

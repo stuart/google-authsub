@@ -5,14 +5,21 @@
 
 <html>
 <head>
-  <title>get (GData::GoogleAuthSub)</title>
+  <title>revoke_token (GData::GoogleAuthSub)</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
   <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre><span class="ruby-comment cmt"># File googleauthsub.rb, line 164</span>
-  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">get</span>(<span class="ruby-identifier">url</span>)
-     <span class="ruby-identifier">authsub_http_request</span>(<span class="ruby-constant">Net</span><span class="ruby-operator">::</span><span class="ruby-constant">HTTP</span><span class="ruby-operator">::</span><span class="ruby-constant">Get</span>,<span class="ruby-identifier">url</span>)
+  <pre><span class="ruby-comment cmt"># File lib/googleauthsub.rb, line 145</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">revoke_token</span>
+    <span class="ruby-identifier">url</span> = <span class="ruby-constant">URI</span><span class="ruby-operator">::</span><span class="ruby-constant">HTTPS</span>.<span class="ruby-identifier">build</span>({<span class="ruby-identifier">:host=</span><span class="ruby-operator">&gt;</span><span class="ruby-constant">GOOGLE_HOST_URL</span>,
+      <span class="ruby-identifier">:path</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-constant">GOOGLE_AUTHSUB_REVOKE_PATH</span>})
+    <span class="ruby-keyword kw">begin</span>
+     <span class="ruby-identifier">get</span>(<span class="ruby-identifier">url</span>)
+     <span class="ruby-keyword kw">true</span>
+    <span class="ruby-keyword kw">rescue</span>
+     <span class="ruby-keyword kw">false</span>
+    <span class="ruby-keyword kw">end</span>
   <span class="ruby-keyword kw">end</span></pre>
 </body>
 </html>
