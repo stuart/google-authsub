@@ -94,9 +94,8 @@ class GoogleAuthSub
   # This returns a URI::HTTPS object which contains the Google url to request a token from.
   def request_url
      #FIXME: these currently cause a crash.
-     #raise AuthSubError, "Invalid next URL: #{@next_url}" if !full_url?(@next_url)
-     #raise AuthSubError, "Invalid scope URL: #{@scope}" if !full_url?(@scope)
-
+     raise AuthSubError, "Invalid next URL: #{@next_url}" if !full_url?(@next_url)
+     raise AuthSubError, "Invalid scope URL: #{@scope}" if !full_url?(@scope)
      query = "next=" << @next_url << "&scope=" << @scope << "&session="<<
              (session_token? ? '1' : '0')<< "&secure="<< (secure_token? ? '1' : '0')
      query = URI.encode(query)
@@ -112,7 +111,8 @@ class GoogleAuthSub
   # +GoogleAuthsub#token=params[:token]+
   #
   def receive_token(url)
-    q = url.query.match(/Token=(.*)/)
+    puts url
+    q = url.query.match( /.*token=(.*)/i)
     @token = q[1] if !q.nil?
   end
 
@@ -169,7 +169,6 @@ class GoogleAuthSub
     rescue
       raise AuthSubError, "Google Authsub Error: invalid token info packet received."
     end
-
     return info
   end
 
@@ -179,6 +178,7 @@ class GoogleAuthSub
   def get(url)
      authsub_http_request(Net::HTTP::Get,url)
   end
+  
   # post +url+
   # Does a HTTP POST request to Google using the AuthSub token.
   # This returns a Net::HTTPResponse object.
@@ -241,23 +241,15 @@ class GoogleAuthSub
     when false
       return "AuthSub token=\"#{@token}\""
     when true
-      data = authorization_data(request, url)
-      sig = sign_data(data)
-      return "AuthSub token=\"#{@token}\" sigalg=\"#{sigalg}\" data=\"#{data}\" sig=\"#{sig}\""
+      timestamp = Time.now.to_i
+      nonce = OpenSSL::BN.rand_range(2**64)
+      data = request.method + ' ' + url.to_s + ' ' + timestamp.to_s + ' ' + nonce.to_s
+      digest = OpenSSL::Digest::SHA1.new(data).hexdigest
+      sig = [@@pkey.private_encrypt(digest)].pack("m")  #Base64 encode
+      return "AuthSub token=\"#{@token}\" data=\"#{data}\" sig=\"#{sig}\" sigalg=\"#{sigalg}\""
     end
   end
-
-  # This creates the data string for secure authorisation.
-  # It is this that gets sent.
-  def authorization_data(request, url)
-    nonce = OpenSSL::BN.rand_range(2**64)
-    data = request.method + ' ' + url.to_s + ' ' + Time.now.to_i.to_s + ' ' + nonce.to_s
-  end
-
-  def sign_data(data)
-     Base64.b64encode(@@pkey.sign(OpenSSL::Digest::SHA1.new, data))
-   end
-
+  
   # Checks whether a URL is a full url, i.e. has all of scheme, host and path.
   def full_url?(url)
     # First check if it is a bad uri
@@ -266,13 +258,10 @@ class GoogleAuthSub
     rescue URI.InvalidURIError
       return false
     end
-    print u.scheme
-    print u.host
-    print u.path
     return false if u.scheme.nil? || u.host.nil? || u.path.nil?
     true
   end
-
+  
 end
 
 end

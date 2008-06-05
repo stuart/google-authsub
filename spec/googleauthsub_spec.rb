@@ -177,7 +177,7 @@ describe GoogleAuthSub do
 
   describe "Token received from Google in response url. Note: in Rails this is simply params[:token]" do
     before do
-     url = URI::HTTP.build({:host => "www.example.com", :path => "/next", :query => "Token=#{@token}"})
+     url = URI::HTTP.build({:host => "www.example.com", :path => "/next", :query => "token=#{@token}"})
      @authsub.receive_token(url)
     end
     

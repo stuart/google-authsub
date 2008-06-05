@@ -29,10 +29,11 @@ module GData
     end
     
     # check the auth_data section of the header
+    #FIXME!
     def auth_data(method,url)
       url = URI.parse(url)
       request = method.new(url.path)
-      authorization_data(request,url)
+      
     end
     
     # extract signature from header
