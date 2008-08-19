@@ -553,7 +553,7 @@ span.run100 {
 </style>
     </head>
   <body><h3>C0 code coverage information</h3>
-    <p>Generated on Mon Mar 17 13:10:25 +1000 2008 with <a href='http://eigenclass.org/hiki/rcov'>rcov 0.8.1.2</a>
+    <p>Generated on Sat Jun 07 16:45:06 +1000 2008 with <a href='http://eigenclass.org/hiki/rcov'>rcov 0.8.1.2</a>
       </p>
     <hr/>
     <pre><span class='marked0'>Code reported as executed by Ruby looks like this...
@@ -571,11 +571,11 @@ span.run100 {
     </thead>
   <tbody><tr class='light'><td><a href='lib-googleauthsub_rb.html'>lib/googleauthsub.rb</a>
         </td>
-      <td class='lines_total'><tt>230</tt>
+      <td class='lines_total'><tt>267</tt>
         </td>
-      <td class='lines_code'><tt>134</tt>
+      <td class='lines_code'><tt>157</tt>
         </td>
-      <td><table cellspacing='0' cellpadding='0' align='right'><tr><td><tt class='coverage_total'>50.9%</tt>
+      <td><table cellspacing='0' cellpadding='0' align='right'><tr><td><tt class='coverage_total'>50.6%</tt>
               &nbsp;</td>
             <td><table cellspacing='0' class='percent_graph' cellpadding='0' width='100'><tr><td class='covered' width='51'/>
                   <td class='uncovered' width='49'/>
@@ -585,7 +585,7 @@ span.run100 {
             </tr>
           </table>
         </td>
-      <td><table cellspacing='0' cellpadding='0' align='right'><tr><td><tt class='coverage_code'>21.6%</tt>
+      <td><table cellspacing='0' cellpadding='0' align='right'><tr><td><tt class='coverage_code'>21.7%</tt>
               &nbsp;</td>
             <td><table cellspacing='0' class='percent_graph' cellpadding='0' width='100'><tr><td class='covered' width='22'/>
                   <td class='uncovered' width='78'/>
@@ -598,9 +598,9 @@ span.run100 {
       </tr>
     </tbody>
   </table>
-<pre><span class="inferred1"><a name="line1"></a>  1 # AuthSub - Ruby on Rails plugin for Google Authorization
+<pre><span class="inferred1"><a name="line1"></a>  1 # AuthSub - Ruby library for Google Authorization
 </span><span class="inferred0"><a name="line2"></a>  2 # # Copyright 2008 Stuart Coyle &lt;stuart.coyle@gmail.com&gt;
-</span><span class="inferred1"><a name="line3"></a>  3 # 
+</span><span class="inferred1"><a name="line3"></a>  3 #
 </span><span class="inferred0"><a name="line4"></a>  4 # Permission is hereby granted, free of charge, to any person obtaining
 </span><span class="inferred1"><a name="line5"></a>  5 # a copy of this software and associated documentation files (the
 </span><span class="inferred0"><a name="line6"></a>  6 # &quot;Software&quot;), to deal in the Software without restriction, including
@@ -608,10 +608,10 @@ span.run100 {
 </span><span class="inferred0"><a name="line8"></a>  8 # distribute, sublicense, and/or sell copies of the Software, and to
 </span><span class="inferred1"><a name="line9"></a>  9 # permit persons to whom the Software is furnished to do so, subject to
 </span><span class="inferred0"><a name="line10"></a> 10 # the following conditions:
-</span><span class="inferred1"><a name="line11"></a> 11 # 
+</span><span class="inferred1"><a name="line11"></a> 11 #
 </span><span class="inferred0"><a name="line12"></a> 12 # The above copyright notice and this permission notice shall be
 </span><span class="inferred1"><a name="line13"></a> 13 # included in all copies or substantial portions of the Software.
-</span><span class="inferred0"><a name="line14"></a> 14 # 
+</span><span class="inferred0"><a name="line14"></a> 14 #
 </span><span class="inferred1"><a name="line15"></a> 15 # THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND,
 </span><span class="inferred0"><a name="line16"></a> 16 # EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 </span><span class="inferred1"><a name="line17"></a> 17 # MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -625,209 +625,246 @@ span.run100 {
 </span><span class="marked1"><a name="line25"></a> 25 require 'openssl'
 </span><span class="marked0"><a name="line26"></a> 26 require 'base64'
 </span><span class="inferred1"><a name="line27"></a> 27 
-</span><span class="inferred0"><a name="line28"></a> 28 
-</span><span class="marked1"><a name="line29"></a> 29 module GData
-</span><span class="marked0"><a name="line30"></a> 30     GOOGLE_HOST_URL = &quot;www.google.com&quot;
-</span><span class="marked1"><a name="line31"></a> 31     GOOGLE_AUTHSUB_BASE_PATH = &quot;/accounts&quot;
-</span><span class="marked0"><a name="line32"></a> 32     GOOGLE_AUTHSUB_REQUEST_PATH = GOOGLE_AUTHSUB_BASE_PATH + &quot;/AuthSubRequest&quot;
-</span><span class="marked1"><a name="line33"></a> 33     GOOGLE_AUTHSUB_SESSION_TOKEN_PATH = GOOGLE_AUTHSUB_BASE_PATH + &quot;/AuthSubSessionToken&quot;
-</span><span class="marked0"><a name="line34"></a> 34     GOOGLE_AUTHSUB_REVOKE_PATH = GOOGLE_AUTHSUB_BASE_PATH + &quot;/AuthSubRevokeToken&quot;
-</span><span class="marked1"><a name="line35"></a> 35     GOOGLE_AUTHSUB_TOKEN_INFO_PATH = GOOGLE_AUTHSUB_BASE_PATH + &quot;/AuthSubTokenInfo&quot;
-</span><span class="inferred0"><a name="line36"></a> 36 
-</span><span class="inferred1"><a name="line37"></a> 37 # GoogleAuthSub
-</span><span class="inferred0"><a name="line38"></a> 38 # This class handles the Google Authentication for Web Applications API 
-</span><span class="inferred1"><a name="line39"></a> 39 # 
-</span><span class="marked0"><a name="line40"></a> 40 class GoogleAuthSub
-</span><span class="inferred1"><a name="line41"></a> 41  
-</span><span class="marked0"><a name="line42"></a> 42   attr_accessor :target, :scope, :session, :secure, :next_url, :token, :sigalg
-</span><span class="inferred1"><a name="line43"></a> 43   
-</span><span class="inferred0"><a name="line44"></a> 44   # key can be a File, String or OpenSSL::Pkey::RSA
-</span><span class="inferred1"><a name="line45"></a> 45   # Sets the private key to use for secure sessions. 
-</span><span class="inferred0"><a name="line46"></a> 46   # This should corespond to the public key sent to Google in 
-</span><span class="inferred1"><a name="line47"></a> 47   # the registration process. 
-</span><span class="inferred0"><a name="line48"></a> 48   # For registration details see: 
-</span><span class="inferred1"><a name="line49"></a> 49   #   http://code.google.com/apis/accounts/docs/RegistrationForWebAppsAuto.html
-</span><span class="inferred0"><a name="line50"></a> 50   #
-</span><span class="inferred1"><a name="line51"></a> 51   # This sets the class variable @@pkey to an OpenSSL::Pkey::RSA object
-</span><span class="marked0"><a name="line52"></a> 52   def self.set_private_key(key)
-</span><span class="uncovered1"><a name="line53"></a> 53      case key
-</span><span class="uncovered0"><a name="line54"></a> 54        when OpenSSL::PKey::RSA
-</span><span class="uncovered1"><a name="line55"></a> 55          @@pkey = key
-</span><span class="uncovered0"><a name="line56"></a> 56        when File
-</span><span class="uncovered1"><a name="line57"></a> 57          # Read key from a PEM file.
-</span><span class="uncovered0"><a name="line58"></a> 58          @@pkey = OpenSSL::PKey::RSA.new(key.read)
-</span><span class="uncovered1"><a name="line59"></a> 59        when String
-</span><span class="uncovered0"><a name="line60"></a> 60          # Get key from a PEM in the form of a string.
-</span><span class="uncovered1"><a name="line61"></a> 61          @@pkey = OpenSSL::PKey::RSA.new(key)
-</span><span class="uncovered0"><a name="line62"></a> 62        else
-</span><span class="uncovered1"><a name="line63"></a> 63          raise &quot;Private Key in wrong format. Require IO, String or OpenSSL::Pkey::RSA, got #{key.class}&quot;
-</span><span class="uncovered0"><a name="line64"></a> 64      end
-</span><span class="uncovered1"><a name="line65"></a> 65   end
-</span><span class="inferred0"><a name="line66"></a> 66   
-</span><span class="inferred1"><a name="line67"></a> 67   # Create a new GoogleAuthsub object
-</span><span class="inferred0"><a name="line68"></a> 68   # Options specified in +opts+ consist of:
-</span><span class="inferred1"><a name="line69"></a> 69   #
-</span><span class="inferred0"><a name="line70"></a> 70   # * :next_url - (String)  The url to redirect back to once the user has signed in to Google.
-</span><span class="inferred1"><a name="line71"></a> 71   # * :scope_url - (String) The service from Google that you wish to receive data from with this token.
-</span><span class="inferred0"><a name="line72"></a> 72   # * :session - (boolean)  Wether the token is able to be used to get a session token or is just one use.
-</span><span class="inferred1"><a name="line73"></a> 73   # * :secure - (boolean) Wether the token can be used for sessions.
-</span><span class="inferred0"><a name="line74"></a> 74   #
-</span><span class="marked1"><a name="line75"></a> 75   def initialize(opts = {})
-</span><span class="uncovered0"><a name="line76"></a> 76     self.next_url = opts[:next_url] || ''
-</span><span class="uncovered1"><a name="line77"></a> 77     self.scope = opts[:scope_url] || ''
-</span><span class="uncovered0"><a name="line78"></a> 78     self.session = opts[:session] || false
-</span><span class="uncovered1"><a name="line79"></a> 79     self.secure = opts[:secure] || false
-</span><span class="uncovered0"><a name="line80"></a> 80     self.sigalg = &quot;rsa-sha1&quot;
-</span><span class="uncovered1"><a name="line81"></a> 81   end
-</span><span class="inferred0"><a name="line82"></a> 82   
-</span><span class="inferred1"><a name="line83"></a> 83   # This returns a URI::HTTPS object which contains the Google url to request a token from.
-</span><span class="marked0"><a name="line84"></a> 84   def request_url
-</span><span class="uncovered1"><a name="line85"></a> 85      query = &quot;next=&quot; &lt;&lt; @next_url &lt;&lt; &quot;&amp;scope=&quot; &lt;&lt; @scope &lt;&lt; &quot;&amp;session=&quot;&lt;&lt;
-</span><span class="uncovered0"><a name="line86"></a> 86              (session_token? ? '1' : '0')&lt;&lt; &quot;&amp;secure=&quot;&lt;&lt; (secure_token? ? '1' : '0')
-</span><span class="uncovered1"><a name="line87"></a> 87      query = URI.encode(query)
-</span><span class="uncovered0"><a name="line88"></a> 88      URI::HTTPS.build({:host =&gt; GOOGLE_HOST_URL, :path =&gt; GOOGLE_AUTHSUB_REQUEST_PATH, :query =&gt; query })
-</span><span class="uncovered1"><a name="line89"></a> 89   end
-</span><span class="inferred0"><a name="line90"></a> 90   
-</span><span class="inferred1"><a name="line91"></a> 91   # +url+ :the URL received from Google once the user has signed in.
-</span><span class="inferred0"><a name="line92"></a> 92   #
-</span><span class="inferred1"><a name="line93"></a> 93   # This method extracts the token from the request url that Google
-</span><span class="inferred0"><a name="line94"></a> 94   # sends the user back to. 
-</span><span class="inferred1"><a name="line95"></a> 95   # This url will be like: http://www.example.com/next?Token=CMDshfjfkeodf
-</span><span class="inferred0"><a name="line96"></a> 96   # In Rails you don't need this method, just use 
-</span><span class="inferred1"><a name="line97"></a> 97   # +GoogleAuthsub#token=params[:token]+
-</span><span class="inferred0"><a name="line98"></a> 98   # 
-</span><span class="marked1"><a name="line99"></a> 99   def receive_token(url)
-</span><span class="uncovered0"><a name="line100"></a>100     q = url.query.match(/Token=(.*)/)
-</span><span class="uncovered1"><a name="line101"></a>101     @token = q[1] if !q.nil?
-</span><span class="uncovered0"><a name="line102"></a>102   end
-</span><span class="inferred1"><a name="line103"></a>103   
-</span><span class="inferred0"><a name="line104"></a>104   # Returns true if this token can be exchanged for a session token
-</span><span class="marked1"><a name="line105"></a>105   def session_token?
-</span><span class="uncovered0"><a name="line106"></a>106     session == true
-</span><span class="uncovered1"><a name="line107"></a>107   end
-</span><span class="inferred0"><a name="line108"></a>108   
-</span><span class="inferred1"><a name="line109"></a>109   # Returns true if the token is used for secure sessions
-</span><span class="marked0"><a name="line110"></a>110   def secure_token?
-</span><span class="uncovered1"><a name="line111"></a>111     secure == true
-</span><span class="uncovered0"><a name="line112"></a>112   end
-</span><span class="inferred1"><a name="line113"></a>113   
-</span><span class="inferred0"><a name="line114"></a>114   # session_token
-</span><span class="inferred1"><a name="line115"></a>115   # This method exchanges a previously received single use token with a session token.
-</span><span class="inferred0"><a name="line116"></a>116   # Raises error if an invalid response is received.
-</span><span class="marked1"><a name="line117"></a>117   def session_token
-</span><span class="uncovered0"><a name="line118"></a>118     url =  URI::HTTPS.build({:host =&gt; GOOGLE_HOST_URL,
-</span><span class="uncovered1"><a name="line119"></a>119         :path =&gt; GOOGLE_AUTHSUB_SESSION_TOKEN_PATH})   
-</span><span class="uncovered0"><a name="line120"></a>120     begin
-</span><span class="uncovered1"><a name="line121"></a>121      @token = get(url).body.match(/^Token=(.*)$/)[1]
-</span><span class="uncovered0"><a name="line122"></a>122    rescue
-</span><span class="uncovered1"><a name="line123"></a>123      raise &quot;ERROR: Invalid session token response.&quot;
-</span><span class="uncovered0"><a name="line124"></a>124    end
-</span><span class="uncovered1"><a name="line125"></a>125   end
-</span><span class="inferred0"><a name="line126"></a>126   
-</span><span class="inferred1"><a name="line127"></a>127   # revoke_token
-</span><span class="inferred0"><a name="line128"></a>128   # This revokes either a single use or session token
-</span><span class="inferred1"><a name="line129"></a>129   # The token will not be able to be used again if this call is successful.
-</span><span class="inferred0"><a name="line130"></a>130   # It returns true on sucess, false on failure.
-</span><span class="marked1"><a name="line131"></a>131   def revoke_token
-</span><span class="uncovered0"><a name="line132"></a>132     url = URI::HTTPS.build({:host=&gt;GOOGLE_HOST_URL,
-</span><span class="uncovered1"><a name="line133"></a>133       :path =&gt; GOOGLE_AUTHSUB_REVOKE_PATH})
-</span><span class="uncovered0"><a name="line134"></a>134     begin
-</span><span class="uncovered1"><a name="line135"></a>135      get(url)
-</span><span class="uncovered0"><a name="line136"></a>136      true
-</span><span class="uncovered1"><a name="line137"></a>137     rescue
-</span><span class="uncovered0"><a name="line138"></a>138      false
-</span><span class="uncovered1"><a name="line139"></a>139     end
+</span><span class="inferred0"><a name="line28"></a> 28 # Note: The module declared here may change depending on what other developers are using
+</span><span class="inferred1"><a name="line29"></a> 29 #
+</span><span class="marked0"><a name="line30"></a> 30 module GData
+</span><span class="marked1"><a name="line31"></a> 31     GOOGLE_HOST_URL = &quot;www.google.com&quot;
+</span><span class="marked0"><a name="line32"></a> 32     GOOGLE_AUTHSUB_BASE_PATH = &quot;/accounts&quot;
+</span><span class="marked1"><a name="line33"></a> 33     GOOGLE_AUTHSUB_REQUEST_PATH = GOOGLE_AUTHSUB_BASE_PATH + &quot;/AuthSubRequest&quot;
+</span><span class="marked0"><a name="line34"></a> 34     GOOGLE_AUTHSUB_SESSION_TOKEN_PATH = GOOGLE_AUTHSUB_BASE_PATH + &quot;/AuthSubSessionToken&quot;
+</span><span class="marked1"><a name="line35"></a> 35     GOOGLE_AUTHSUB_REVOKE_PATH = GOOGLE_AUTHSUB_BASE_PATH + &quot;/AuthSubRevokeToken&quot;
+</span><span class="marked0"><a name="line36"></a> 36     GOOGLE_AUTHSUB_TOKEN_INFO_PATH = GOOGLE_AUTHSUB_BASE_PATH + &quot;/AuthSubTokenInfo&quot;
+</span><span class="inferred1"><a name="line37"></a> 37 
+</span><span class="marked0"><a name="line38"></a> 38 class Error &lt; Exception
+</span><span class="inferred1"><a name="line39"></a> 39 end
+</span><span class="inferred0"><a name="line40"></a> 40 
+</span><span class="marked1"><a name="line41"></a> 41 class AuthSubError &lt; Error
+</span><span class="marked0"><a name="line42"></a> 42   def message
+</span><span class="uncovered1"><a name="line43"></a> 43     &quot;Google Authentication Error&quot;
+</span><span class="uncovered0"><a name="line44"></a> 44   end
+</span><span class="uncovered1"><a name="line45"></a> 45 end
+</span><span class="inferred0"><a name="line46"></a> 46 
+</span><span class="inferred1"><a name="line47"></a> 47 
+</span><span class="inferred0"><a name="line48"></a> 48 # GoogleAuthSub
+</span><span class="inferred1"><a name="line49"></a> 49 # This class handles the Google Authentication for Web Applications API
+</span><span class="inferred0"><a name="line50"></a> 50 #
+</span><span class="marked1"><a name="line51"></a> 51 class GoogleAuthSub
+</span><span class="inferred0"><a name="line52"></a> 52 
+</span><span class="marked1"><a name="line53"></a> 53   attr_accessor :target, :scope, :session, :secure, :next_url, :token, :sigalg
+</span><span class="inferred0"><a name="line54"></a> 54 
+</span><span class="inferred1"><a name="line55"></a> 55   # +key+ can be a File, String or OpenSSL::Pkey::RSA
+</span><span class="inferred0"><a name="line56"></a> 56   # Sets the private key to use for secure sessions.
+</span><span class="inferred1"><a name="line57"></a> 57   # This should correspond to the public key sent to Google in
+</span><span class="inferred0"><a name="line58"></a> 58   # the registration process.
+</span><span class="inferred1"><a name="line59"></a> 59   # For registration details see:
+</span><span class="inferred0"><a name="line60"></a> 60   #   http://code.google.com/apis/accounts/docs/RegistrationForWebAppsAuto.html
+</span><span class="inferred1"><a name="line61"></a> 61   #
+</span><span class="inferred0"><a name="line62"></a> 62   # This sets the class variable @@pkey to an OpenSSL::Pkey::RSA object
+</span><span class="marked1"><a name="line63"></a> 63   def self.set_private_key(key)
+</span><span class="uncovered0"><a name="line64"></a> 64      case key
+</span><span class="uncovered1"><a name="line65"></a> 65        when OpenSSL::PKey::RSA
+</span><span class="uncovered0"><a name="line66"></a> 66          @@pkey = key
+</span><span class="uncovered1"><a name="line67"></a> 67        when File
+</span><span class="uncovered0"><a name="line68"></a> 68          # Read key from a PEM file.
+</span><span class="uncovered1"><a name="line69"></a> 69          @@pkey = OpenSSL::PKey::RSA.new(key.read)
+</span><span class="uncovered0"><a name="line70"></a> 70        when String
+</span><span class="uncovered1"><a name="line71"></a> 71          # Get key from a PEM in the form of a string.
+</span><span class="uncovered0"><a name="line72"></a> 72          @@pkey = OpenSSL::PKey::RSA.new(key)
+</span><span class="uncovered1"><a name="line73"></a> 73        else
+</span><span class="uncovered0"><a name="line74"></a> 74          raise AuthSubError, &quot;Private Key in wrong format. Require IO, String or OpenSSL::Pkey::RSA, you gave me #{key.class}&quot;
+</span><span class="uncovered1"><a name="line75"></a> 75      end
+</span><span class="uncovered0"><a name="line76"></a> 76   end
+</span><span class="inferred1"><a name="line77"></a> 77 
+</span><span class="inferred0"><a name="line78"></a> 78   # Create a new GoogleAuthsub object
+</span><span class="inferred1"><a name="line79"></a> 79   # Options specified in +opts+ consist of:
+</span><span class="inferred0"><a name="line80"></a> 80   #
+</span><span class="inferred1"><a name="line81"></a> 81   # * :next_url - (String)  The url to redirect back to once the user has signed in to Google.
+</span><span class="inferred0"><a name="line82"></a> 82   # * :scope_url - (String) The service from Google that you wish to receive data from with this token.
+</span><span class="inferred1"><a name="line83"></a> 83   # * :session - (boolean)  Whether the token is able to be used to get a session token or is just one use.
+</span><span class="inferred0"><a name="line84"></a> 84   # * :secure - (boolean) Whether the token can be used for sessions.
+</span><span class="inferred1"><a name="line85"></a> 85   # * :sigalg - (String) Currently not needed, as the Authsub specification only has rsa-sha1.  
+</span><span class="marked0"><a name="line86"></a> 86   def initialize(opts = {})
+</span><span class="uncovered1"><a name="line87"></a> 87     self.next_url = opts[:next_url] || ''
+</span><span class="uncovered0"><a name="line88"></a> 88     self.scope = opts[:scope_url] || ''
+</span><span class="uncovered1"><a name="line89"></a> 89     self.session = opts[:session] || false
+</span><span class="uncovered0"><a name="line90"></a> 90     self.secure = opts[:secure] || false
+</span><span class="uncovered1"><a name="line91"></a> 91     self.sigalg = opts[:sigalg] || &quot;rsa-sha1&quot;
+</span><span class="uncovered0"><a name="line92"></a> 92   end
+</span><span class="inferred1"><a name="line93"></a> 93 
+</span><span class="inferred0"><a name="line94"></a> 94   # This returns a URI::HTTPS object which contains the Google url to request a token from.
+</span><span class="marked1"><a name="line95"></a> 95   def request_url
+</span><span class="uncovered0"><a name="line96"></a> 96      #FIXME: these currently cause a crash.
+</span><span class="uncovered1"><a name="line97"></a> 97      raise AuthSubError, &quot;Invalid next URL: #{@next_url}&quot; if !full_url?(@next_url)
+</span><span class="uncovered0"><a name="line98"></a> 98      raise AuthSubError, &quot;Invalid scope URL: #{@scope}&quot; if !full_url?(@scope)
+</span><span class="uncovered1"><a name="line99"></a> 99      query = &quot;next=&quot; &lt;&lt; @next_url &lt;&lt; &quot;&amp;scope=&quot; &lt;&lt; @scope &lt;&lt; &quot;&amp;session=&quot;&lt;&lt;
+</span><span class="uncovered0"><a name="line100"></a>100              (session_token? ? '1' : '0')&lt;&lt; &quot;&amp;secure=&quot;&lt;&lt; (secure_token? ? '1' : '0')
+</span><span class="uncovered1"><a name="line101"></a>101      query = URI.encode(query)
+</span><span class="uncovered0"><a name="line102"></a>102      URI::HTTPS.build({:host =&gt; GOOGLE_HOST_URL, :path =&gt; GOOGLE_AUTHSUB_REQUEST_PATH, :query =&gt; query })
+</span><span class="uncovered1"><a name="line103"></a>103   end
+</span><span class="inferred0"><a name="line104"></a>104 
+</span><span class="inferred1"><a name="line105"></a>105   # +url+ :the URL received from Google once the user has signed in.
+</span><span class="inferred0"><a name="line106"></a>106   #
+</span><span class="inferred1"><a name="line107"></a>107   # This method extracts the token from the request url that Google
+</span><span class="inferred0"><a name="line108"></a>108   # sends the user back to.
+</span><span class="inferred1"><a name="line109"></a>109   # This url will be like: http://www.example.com/next?Token=CMDshfjfkeodf
+</span><span class="inferred0"><a name="line110"></a>110   # In Rails applications you don't need this method, just use
+</span><span class="inferred1"><a name="line111"></a>111   # +GoogleAuthsub#token=params[:token]+
+</span><span class="inferred0"><a name="line112"></a>112   #
+</span><span class="marked1"><a name="line113"></a>113   def receive_token(url)
+</span><span class="uncovered0"><a name="line114"></a>114     puts url
+</span><span class="uncovered1"><a name="line115"></a>115     q = url.query.match( /.*token=(.*)/i)
+</span><span class="uncovered0"><a name="line116"></a>116     @token = q[1] if !q.nil?
+</span><span class="uncovered1"><a name="line117"></a>117   end
+</span><span class="inferred0"><a name="line118"></a>118 
+</span><span class="inferred1"><a name="line119"></a>119   # Returns true if this token can be exchanged for a session token
+</span><span class="marked0"><a name="line120"></a>120   def session_token?
+</span><span class="uncovered1"><a name="line121"></a>121     session == true
+</span><span class="uncovered0"><a name="line122"></a>122   end
+</span><span class="inferred1"><a name="line123"></a>123 
+</span><span class="inferred0"><a name="line124"></a>124   # Returns true if the token is used for secure sessions
+</span><span class="marked1"><a name="line125"></a>125   def secure_token?
+</span><span class="uncovered0"><a name="line126"></a>126     secure == true
+</span><span class="uncovered1"><a name="line127"></a>127   end
+</span><span class="inferred0"><a name="line128"></a>128 
+</span><span class="inferred1"><a name="line129"></a>129   # session_token
+</span><span class="inferred0"><a name="line130"></a>130   # This method exchanges a previously received single use token with a session token.
+</span><span class="inferred1"><a name="line131"></a>131   # Raises error if an invalid response is received.
+</span><span class="marked0"><a name="line132"></a>132   def session_token
+</span><span class="uncovered1"><a name="line133"></a>133     url =  URI::HTTPS.build({:host =&gt; GOOGLE_HOST_URL,
+</span><span class="uncovered0"><a name="line134"></a>134         :path =&gt; GOOGLE_AUTHSUB_SESSION_TOKEN_PATH})
+</span><span class="uncovered1"><a name="line135"></a>135     begin
+</span><span class="uncovered0"><a name="line136"></a>136      @token = get(url).body.match(/^Token=(.*)$/)[1]
+</span><span class="uncovered1"><a name="line137"></a>137    rescue
+</span><span class="uncovered0"><a name="line138"></a>138      raise AuthSubError, &quot;Invalid session token response.&quot;
+</span><span class="uncovered1"><a name="line139"></a>139    end
 </span><span class="uncovered0"><a name="line140"></a>140   end
-</span><span class="inferred1"><a name="line141"></a>141   
-</span><span class="inferred0"><a name="line142"></a>142   # token_info
-</span><span class="inferred1"><a name="line143"></a>143   # Returns the information for the session token
-</span><span class="inferred0"><a name="line144"></a>144   # as a map {:target, :scope, :secure} 
-</span><span class="marked1"><a name="line145"></a>145   def token_info
-</span><span class="uncovered0"><a name="line146"></a>146     url =  URI::HTTPS.build({:host=&gt;GOOGLE_HOST_URL,
-</span><span class="uncovered1"><a name="line147"></a>147       :path =&gt; GOOGLE_AUTHSUB_TOKEN_INFO_PATH})
-</span><span class="uncovered0"><a name="line148"></a>148     response = get(url)
-</span><span class="uncovered1"><a name="line149"></a>149     info = Hash.new
-</span><span class="uncovered0"><a name="line150"></a>150     begin
-</span><span class="uncovered1"><a name="line151"></a>151       info[:target] = response.body.match(/^Target=(.*)$/)[1]
-</span><span class="uncovered0"><a name="line152"></a>152       info[:scope] = response.body.match(/^Scope=(.*)$/)[1]
-</span><span class="uncovered1"><a name="line153"></a>153       info[:secure] = (response.body.match(/^Secure=(.*)$/)[1].downcase == 'true')
-</span><span class="uncovered0"><a name="line154"></a>154     rescue
-</span><span class="uncovered1"><a name="line155"></a>155       raise &quot;Google Authsub Error: invalid token info packet received.&quot;
-</span><span class="uncovered0"><a name="line156"></a>156     end
-</span><span class="uncovered1"><a name="line157"></a>157    
-</span><span class="uncovered0"><a name="line158"></a>158     return info
-</span><span class="uncovered1"><a name="line159"></a>159   end
-</span><span class="inferred0"><a name="line160"></a>160   
-</span><span class="inferred1"><a name="line161"></a>161   # get +url+
-</span><span class="inferred0"><a name="line162"></a>162   # Does a HTTP GET request to Google using the AuthSub token.
-</span><span class="inferred1"><a name="line163"></a>163   # This returns a Net::HTTPResponse object.
-</span><span class="marked0"><a name="line164"></a>164   def get(url)
-</span><span class="uncovered1"><a name="line165"></a>165      authsub_http_request(Net::HTTP::Get,url)
-</span><span class="uncovered0"><a name="line166"></a>166   end
-</span><span class="inferred1"><a name="line167"></a>167   # post +url+
-</span><span class="inferred0"><a name="line168"></a>168   # Does a HTTP POST request to Google using the AuthSub token.
-</span><span class="inferred1"><a name="line169"></a>169   # This returns a Net::HTTPResponse object.
-</span><span class="marked0"><a name="line170"></a>170   def post(url)
-</span><span class="uncovered1"><a name="line171"></a>171      authsub_http_request(Net::HTTP::Post,url)
-</span><span class="uncovered0"><a name="line172"></a>172   end
-</span><span class="inferred1"><a name="line173"></a>173   
-</span><span class="marked0"><a name="line174"></a>174   private
-</span><span class="inferred1"><a name="line175"></a>175   
-</span><span class="marked0"><a name="line176"></a>176   def authsub_http_request(method, u) #:nodoc:
-</span><span class="uncovered1"><a name="line177"></a>177     case u
-</span><span class="uncovered0"><a name="line178"></a>178       when String 
-</span><span class="uncovered1"><a name="line179"></a>179         # Add scope
-</span><span class="uncovered0"><a name="line180"></a>180         u = (@scope &lt;&lt; u) if @scope &amp;&amp; !u.include?(@scope)        
-</span><span class="uncovered1"><a name="line181"></a>181         begin
-</span><span class="uncovered0"><a name="line182"></a>182           url = URI.parse(u)
-</span><span class="uncovered1"><a name="line183"></a>183         rescue URI::InvalidURIError
-</span><span class="uncovered0"><a name="line184"></a>184           raise URI::InvalidURIError
-</span><span class="uncovered1"><a name="line185"></a>185         end
-</span><span class="uncovered0"><a name="line186"></a>186         url = URI.parse(u)
-</span><span class="uncovered1"><a name="line187"></a>187       when URI
-</span><span class="uncovered0"><a name="line188"></a>188         url = u
-</span><span class="uncovered1"><a name="line189"></a>189       else 
-</span><span class="uncovered0"><a name="line190"></a>190         raise &quot;url must be String or URI, #{url.class} received.&quot;
-</span><span class="uncovered1"><a name="line191"></a>191     end 
-</span><span class="uncovered0"><a name="line192"></a>192 
-</span><span class="uncovered1"><a name="line193"></a>193     request = method.new(url.path)
-</span><span class="uncovered0"><a name="line194"></a>194     request['Authorization'] = authorization_header(request, url)
-</span><span class="uncovered1"><a name="line195"></a>195     connection =  Net::HTTP.new(url.host, url.port)
-</span><span class="uncovered0"><a name="line196"></a>196     connection.use_ssl= (url.scheme == 'https')
-</span><span class="uncovered1"><a name="line197"></a>197     response = connection.start{ |http| http.request(request) }
-</span><span class="uncovered0"><a name="line198"></a>198     case response
-</span><span class="uncovered1"><a name="line199"></a>199        when Net::HTTPSuccess
-</span><span class="uncovered0"><a name="line200"></a>200          #OK
-</span><span class="uncovered1"><a name="line201"></a>201        else
-</span><span class="uncovered0"><a name="line202"></a>202          response.error!
-</span><span class="uncovered1"><a name="line203"></a>203        end
-</span><span class="uncovered0"><a name="line204"></a>204     response
-</span><span class="uncovered1"><a name="line205"></a>205   end
-</span><span class="inferred0"><a name="line206"></a>206 
-</span><span class="inferred1"><a name="line207"></a>207   # FIXME SIGN DATA NOT TOKEN!!
-</span><span class="marked0"><a name="line208"></a>208   def authorization_header(request, url) 
-</span><span class="uncovered1"><a name="line209"></a>209     case secure_token?
-</span><span class="uncovered0"><a name="line210"></a>210     when false
-</span><span class="uncovered1"><a name="line211"></a>211       return &quot;AuthSub token=\&quot;#{@token}\&quot;&quot;
-</span><span class="uncovered0"><a name="line212"></a>212     when true
-</span><span class="uncovered1"><a name="line213"></a>213       data = authorization_data(request, url)
-</span><span class="uncovered0"><a name="line214"></a>214       sig = sign_data(data)
-</span><span class="uncovered1"><a name="line215"></a>215       return &quot;AuthSub token=\&quot;#{@token}\&quot; sigalg=\&quot;#{sigalg}\&quot; data=\&quot;#{data}\&quot; sig=\&quot;#{sig}\&quot;&quot;
-</span><span class="uncovered0"><a name="line216"></a>216     end
-</span><span class="uncovered1"><a name="line217"></a>217   end
-</span><span class="inferred0"><a name="line218"></a>218 
-</span><span class="marked1"><a name="line219"></a>219   def authorization_data(request, url)
-</span><span class="uncovered0"><a name="line220"></a>220     nonce = OpenSSL::BN.rand_range(2**64)
-</span><span class="uncovered1"><a name="line221"></a>221     data = request.method + ' ' + url.to_s + ' ' + Time.now.to_i.to_s + ' ' + nonce.to_s
-</span><span class="uncovered0"><a name="line222"></a>222   end
-</span><span class="inferred1"><a name="line223"></a>223   
-</span><span class="marked0"><a name="line224"></a>224   def sign_data(data)
-</span><span class="uncovered1"><a name="line225"></a>225      Base64.b64encode(@@pkey.sign(OpenSSL::Digest::SHA1.new, data))
-</span><span class="uncovered0"><a name="line226"></a>226    end
-</span><span class="uncovered1"><a name="line227"></a>227 end
-</span><span class="uncovered0"><a name="line228"></a>228 
-</span><span class="uncovered1"><a name="line229"></a>229 
-</span><span class="uncovered0"><a name="line230"></a>230 end
+</span><span class="inferred1"><a name="line141"></a>141 
+</span><span class="inferred0"><a name="line142"></a>142   # revoke_token
+</span><span class="inferred1"><a name="line143"></a>143   # This revokes either a single use or session token
+</span><span class="inferred0"><a name="line144"></a>144   # The token will not be able to be used again if this call is successful.
+</span><span class="inferred1"><a name="line145"></a>145   # It returns true on sucess, false on failure.
+</span><span class="marked0"><a name="line146"></a>146   def revoke_token
+</span><span class="uncovered1"><a name="line147"></a>147     url = URI::HTTPS.build({:host=&gt;GOOGLE_HOST_URL,
+</span><span class="uncovered0"><a name="line148"></a>148       :path =&gt; GOOGLE_AUTHSUB_REVOKE_PATH})
+</span><span class="uncovered1"><a name="line149"></a>149     begin
+</span><span class="uncovered0"><a name="line150"></a>150      get(url)
+</span><span class="uncovered1"><a name="line151"></a>151      true
+</span><span class="uncovered0"><a name="line152"></a>152     rescue
+</span><span class="uncovered1"><a name="line153"></a>153      false
+</span><span class="uncovered0"><a name="line154"></a>154     end
+</span><span class="uncovered1"><a name="line155"></a>155   end
+</span><span class="inferred0"><a name="line156"></a>156 
+</span><span class="inferred1"><a name="line157"></a>157   # token_info
+</span><span class="inferred0"><a name="line158"></a>158   # Returns the information for the session token from Google.
+</span><span class="inferred1"><a name="line159"></a>159   # Returns a map {:target, :scope, :secure}
+</span><span class="marked0"><a name="line160"></a>160   def token_info
+</span><span class="uncovered1"><a name="line161"></a>161     url =  URI::HTTPS.build({:host=&gt;GOOGLE_HOST_URL,
+</span><span class="uncovered0"><a name="line162"></a>162       :path =&gt; GOOGLE_AUTHSUB_TOKEN_INFO_PATH})
+</span><span class="uncovered1"><a name="line163"></a>163     response = get(url)
+</span><span class="uncovered0"><a name="line164"></a>164     info = Hash.new
+</span><span class="uncovered1"><a name="line165"></a>165     begin
+</span><span class="uncovered0"><a name="line166"></a>166       info[:target] = response.body.match(/^Target=(.*)$/)[1]
+</span><span class="uncovered1"><a name="line167"></a>167       info[:scope] = response.body.match(/^Scope=(.*)$/)[1]
+</span><span class="uncovered0"><a name="line168"></a>168       info[:secure] = (response.body.match(/^Secure=(.*)$/)[1].downcase == 'true')
+</span><span class="uncovered1"><a name="line169"></a>169     rescue
+</span><span class="uncovered0"><a name="line170"></a>170       raise AuthSubError, &quot;Google Authsub Error: invalid token info packet received.&quot;
+</span><span class="uncovered1"><a name="line171"></a>171     end
+</span><span class="uncovered0"><a name="line172"></a>172     return info
+</span><span class="uncovered1"><a name="line173"></a>173   end
+</span><span class="inferred0"><a name="line174"></a>174 
+</span><span class="inferred1"><a name="line175"></a>175   # get +url+
+</span><span class="inferred0"><a name="line176"></a>176   # Does a HTTP GET request to Google using the AuthSub token.
+</span><span class="inferred1"><a name="line177"></a>177   # This returns a Net::HTTPResponse object.
+</span><span class="marked0"><a name="line178"></a>178   def get(url)
+</span><span class="uncovered1"><a name="line179"></a>179      authsub_http_request(Net::HTTP::Get,url)
+</span><span class="uncovered0"><a name="line180"></a>180   end
+</span><span class="inferred1"><a name="line181"></a>181   
+</span><span class="inferred0"><a name="line182"></a>182   # post +url+
+</span><span class="inferred1"><a name="line183"></a>183   # Does a HTTP POST request to Google using the AuthSub token.
+</span><span class="inferred0"><a name="line184"></a>184   # This returns a Net::HTTPResponse object.
+</span><span class="marked1"><a name="line185"></a>185   def post(url)
+</span><span class="uncovered0"><a name="line186"></a>186      authsub_http_request(Net::HTTP::Post,url)
+</span><span class="uncovered1"><a name="line187"></a>187   end
+</span><span class="inferred0"><a name="line188"></a>188 
+</span><span class="inferred1"><a name="line189"></a>189   # put +url+
+</span><span class="inferred0"><a name="line190"></a>190   # Does a HTTP PUT request to Google using the AuthSub token.
+</span><span class="inferred1"><a name="line191"></a>191   # This returns a Net::HTTPResponse object.
+</span><span class="marked0"><a name="line192"></a>192   def put(url)
+</span><span class="uncovered1"><a name="line193"></a>193     authsub_http_request(Net::HTTP::Put,url)
+</span><span class="uncovered0"><a name="line194"></a>194   end
+</span><span class="inferred1"><a name="line195"></a>195 
+</span><span class="inferred0"><a name="line196"></a>196   # delete +url+
+</span><span class="inferred1"><a name="line197"></a>197   # Does a HTTP DELETE request to Google using the AuthSub token.
+</span><span class="inferred0"><a name="line198"></a>198   # This returns a Net::HTTPResponse object.
+</span><span class="marked1"><a name="line199"></a>199   def delete(url)
+</span><span class="uncovered0"><a name="line200"></a>200     authsub_http_request(Net::HTTP::Delete,url)
+</span><span class="uncovered1"><a name="line201"></a>201   end
+</span><span class="inferred0"><a name="line202"></a>202 
+</span><span class="marked1"><a name="line203"></a>203   private
+</span><span class="inferred0"><a name="line204"></a>204 
+</span><span class="marked1"><a name="line205"></a>205   def authsub_http_request(method, u) #:nodoc:
+</span><span class="uncovered0"><a name="line206"></a>206     case u
+</span><span class="uncovered1"><a name="line207"></a>207       when String
+</span><span class="uncovered0"><a name="line208"></a>208         # Add scope
+</span><span class="uncovered1"><a name="line209"></a>209         u = (@scope &lt;&lt; u) if @scope &amp;&amp; !u.include?(@scope)
+</span><span class="uncovered0"><a name="line210"></a>210         begin
+</span><span class="uncovered1"><a name="line211"></a>211           url = URI.parse(u)
+</span><span class="uncovered0"><a name="line212"></a>212         rescue URI::InvalidURIError
+</span><span class="uncovered1"><a name="line213"></a>213           raise URI::InvalidURIError
+</span><span class="uncovered0"><a name="line214"></a>214         end
+</span><span class="uncovered1"><a name="line215"></a>215       when URI
+</span><span class="uncovered0"><a name="line216"></a>216         url = u
+</span><span class="uncovered1"><a name="line217"></a>217       else
+</span><span class="uncovered0"><a name="line218"></a>218         raise AuthSubError, &quot;url must be String or URI, #{url.class} received.&quot;
+</span><span class="uncovered1"><a name="line219"></a>219     end
+</span><span class="uncovered0"><a name="line220"></a>220 
+</span><span class="uncovered1"><a name="line221"></a>221     if method.superclass != Net::HTTPRequest
+</span><span class="uncovered0"><a name="line222"></a>222       raise AuthSubError, &quot;method must be a Net::HTTPRequest subclass. #{method} received.&quot;
+</span><span class="uncovered1"><a name="line223"></a>223     end
+</span><span class="uncovered0"><a name="line224"></a>224     request = method.new(url.path)
+</span><span class="uncovered1"><a name="line225"></a>225     request['Authorization'] = authorization_header(request, url)
+</span><span class="uncovered0"><a name="line226"></a>226     connection =  Net::HTTP.new(url.host, url.port)
+</span><span class="uncovered1"><a name="line227"></a>227     connection.use_ssl= (url.scheme == 'https')
+</span><span class="uncovered0"><a name="line228"></a>228     response = connection.start{ |http| http.request(request) }
+</span><span class="uncovered1"><a name="line229"></a>229     case response
+</span><span class="uncovered0"><a name="line230"></a>230        when Net::HTTPSuccess
+</span><span class="uncovered1"><a name="line231"></a>231          #OK
+</span><span class="uncovered0"><a name="line232"></a>232        else
+</span><span class="uncovered1"><a name="line233"></a>233          response.error!
+</span><span class="uncovered0"><a name="line234"></a>234        end
+</span><span class="uncovered1"><a name="line235"></a>235     response
+</span><span class="uncovered0"><a name="line236"></a>236   end
+</span><span class="inferred1"><a name="line237"></a>237 
+</span><span class="inferred0"><a name="line238"></a>238   # Construct the authorization header for a request
+</span><span class="marked1"><a name="line239"></a>239   def authorization_header(request, url)
+</span><span class="uncovered0"><a name="line240"></a>240     case secure_token?
+</span><span class="uncovered1"><a name="line241"></a>241     when false
+</span><span class="uncovered0"><a name="line242"></a>242       return &quot;AuthSub token=\&quot;#{@token}\&quot;&quot;
+</span><span class="uncovered1"><a name="line243"></a>243     when true
+</span><span class="uncovered0"><a name="line244"></a>244       timestamp = Time.now.to_i
+</span><span class="uncovered1"><a name="line245"></a>245       nonce = OpenSSL::BN.rand_range(2**64)
+</span><span class="uncovered0"><a name="line246"></a>246       data = request.method + ' ' + url.to_s + ' ' + timestamp.to_s + ' ' + nonce.to_s
+</span><span class="uncovered1"><a name="line247"></a>247       digest = OpenSSL::Digest::SHA1.new(data).hexdigest
+</span><span class="uncovered0"><a name="line248"></a>248       sig = [@@pkey.private_encrypt(digest)].pack(&quot;m&quot;)  #Base64 encode
+</span><span class="uncovered1"><a name="line249"></a>249       return &quot;AuthSub token=\&quot;#{@token}\&quot; data=\&quot;#{data}\&quot; sig=\&quot;#{sig}\&quot; sigalg=\&quot;#{sigalg}\&quot;&quot;
+</span><span class="uncovered0"><a name="line250"></a>250     end
+</span><span class="uncovered1"><a name="line251"></a>251   end
+</span><span class="inferred0"><a name="line252"></a>252   
+</span><span class="inferred1"><a name="line253"></a>253   # Checks whether a URL is a full url, i.e. has all of scheme, host and path.
+</span><span class="marked0"><a name="line254"></a>254   def full_url?(url)
+</span><span class="uncovered1"><a name="line255"></a>255     # First check if it is a bad uri
+</span><span class="uncovered0"><a name="line256"></a>256     begin
+</span><span class="uncovered1"><a name="line257"></a>257       u = URI.parse(url)
+</span><span class="uncovered0"><a name="line258"></a>258     rescue URI.InvalidURIError
+</span><span class="uncovered1"><a name="line259"></a>259       return false
+</span><span class="uncovered0"><a name="line260"></a>260     end
+</span><span class="uncovered1"><a name="line261"></a>261     return false if u.scheme.nil? || u.host.nil? || u.path.nil?
+</span><span class="uncovered0"><a name="line262"></a>262     true
+</span><span class="uncovered1"><a name="line263"></a>263   end
+</span><span class="uncovered0"><a name="line264"></a>264   
+</span><span class="uncovered1"><a name="line265"></a>265 end
+</span><span class="uncovered0"><a name="line266"></a>266 
+</span><span class="uncovered1"><a name="line267"></a>267 end
 </span></pre><hr/>
     <p>Generated using the <a href='http://eigenclass.org/hiki.rb?rcov'>rcov code coverage analysis tool for Ruby</a>
    version 0.8.1.2.</p>

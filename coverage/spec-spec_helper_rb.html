@@ -553,7 +553,7 @@ span.run100 {
 </style>
     </head>
   <body><h3>C0 code coverage information</h3>
-    <p>Generated on Mon Mar 17 13:10:25 +1000 2008 with <a href='http://eigenclass.org/hiki/rcov'>rcov 0.8.1.2</a>
+    <p>Generated on Sat Jun 07 16:45:06 +1000 2008 with <a href='http://eigenclass.org/hiki/rcov'>rcov 0.8.1.2</a>
       </p>
     <hr/>
     <pre><span class='marked0'>Code reported as executed by Ruby looks like this...
@@ -571,24 +571,24 @@ span.run100 {
     </thead>
   <tbody><tr class='light'><td><a href='spec-spec_helper_rb.html'>spec/spec_helper.rb</a>
         </td>
-      <td class='lines_total'><tt>40</tt>
+      <td class='lines_total'><tt>30</tt>
         </td>
-      <td class='lines_code'><tt>25</tt>
+      <td class='lines_code'><tt>22</tt>
         </td>
-      <td><table cellspacing='0' cellpadding='0' align='right'><tr><td><tt class='coverage_total'>67.5%</tt>
+      <td><table cellspacing='0' cellpadding='0' align='right'><tr><td><tt class='coverage_total'>76.7%</tt>
               &nbsp;</td>
-            <td><table cellspacing='0' class='percent_graph' cellpadding='0' width='100'><tr><td class='covered' width='68'/>
-                  <td class='uncovered' width='32'/>
+            <td><table cellspacing='0' class='percent_graph' cellpadding='0' width='100'><tr><td class='covered' width='77'/>
+                  <td class='uncovered' width='23'/>
                   </tr>
                 </table>
               </td>
             </tr>
           </table>
         </td>
-      <td><table cellspacing='0' cellpadding='0' align='right'><tr><td><tt class='coverage_code'>48.0%</tt>
+      <td><table cellspacing='0' cellpadding='0' align='right'><tr><td><tt class='coverage_code'>68.2%</tt>
               &nbsp;</td>
-            <td><table cellspacing='0' class='percent_graph' cellpadding='0' width='100'><tr><td class='covered' width='48'/>
-                  <td class='uncovered' width='52'/>
+            <td><table cellspacing='0' class='percent_graph' cellpadding='0' width='100'><tr><td class='covered' width='68'/>
+                  <td class='uncovered' width='32'/>
                   </tr>
                 </table>
               </td>
@@ -609,35 +609,25 @@ span.run100 {
 </span><span class="marked0"><a name="line9"></a> 9 TOKEN = &quot;CMScoaHmDxC80Y2pAg&quot;
 </span><span class="marked1"><a name="line10"></a>10 SESSION_TOKEN =&quot;CMScoaHmDxDM9dqPBA&quot;
 </span><span class="inferred0"><a name="line11"></a>11 
-</span><span class="inferred1"><a name="line12"></a>12 
-</span><span class="marked0"><a name="line13"></a>13 module GData
-</span><span class="marked1"><a name="line14"></a>14   class GoogleAuthSub    
-</span><span class="inferred0"><a name="line15"></a>15     # Some helper methods to break into Authsub and check a few inner workings.
-</span><span class="inferred1"><a name="line16"></a>16     # I know it breaks encapsulation, so don't complain!
-</span><span class="inferred0"><a name="line17"></a>17     
-</span><span class="inferred1"><a name="line18"></a>18     # auth_header
-</span><span class="inferred0"><a name="line19"></a>19     # Check what authorization header we are sending.
-</span><span class="inferred1"><a name="line20"></a>20     # method is Net::HTTP::Get or Net::HTTP::Post
-</span><span class="marked0"><a name="line21"></a>21     def auth_header(method, url)
-</span><span class="uncovered1"><a name="line22"></a>22       url = URI.parse(url)
-</span><span class="uncovered0"><a name="line23"></a>23       request = method.new(url.path)
-</span><span class="uncovered1"><a name="line24"></a>24       authorization_header(request, url)
-</span><span class="uncovered0"><a name="line25"></a>25     end
-</span><span class="inferred1"><a name="line26"></a>26     
-</span><span class="inferred0"><a name="line27"></a>27     # check the auth_data section of the header
-</span><span class="marked1"><a name="line28"></a>28     def auth_data(method,url)
-</span><span class="uncovered0"><a name="line29"></a>29       url = URI.parse(url)
-</span><span class="uncovered1"><a name="line30"></a>30       request = method.new(url.path)
-</span><span class="uncovered0"><a name="line31"></a>31       authorization_data(request,url)
-</span><span class="uncovered1"><a name="line32"></a>32     end
-</span><span class="inferred0"><a name="line33"></a>33     
-</span><span class="inferred1"><a name="line34"></a>34     # extract signature from header
-</span><span class="marked0"><a name="line35"></a>35     def sig(header)
-</span><span class="uncovered1"><a name="line36"></a>36       s = header.match(/^.*sig=&quot;(.*)&quot;/m)
-</span><span class="uncovered0"><a name="line37"></a>37       s[1] if !s.nil?
-</span><span class="uncovered1"><a name="line38"></a>38     end
-</span><span class="uncovered0"><a name="line39"></a>39   end
-</span><span class="uncovered1"><a name="line40"></a>40 end
+</span><span class="marked1"><a name="line12"></a>12 AUTHSUB_REQUEST_URL = &quot;https://www.google.com/accounts/AuthSubRequest&quot;
+</span><span class="marked0"><a name="line13"></a>13 AUTHSUB_SESSION_TOKEN_URL = &quot;https://www.google.com/accounts/AuthSubSessionToken&quot;
+</span><span class="marked1"><a name="line14"></a>14 AUTHSUB_REVOKE_TOKEN_URL = &quot;https://www.google.com/accounts/AuthSubRevokeToken&quot;
+</span><span class="marked0"><a name="line15"></a>15 AUTHSUB_TOKEN_INFO_URL = &quot;https://www.google.com/accounts/AuthSubTokenInfo&quot;
+</span><span class="inferred1"><a name="line16"></a>16 
+</span><span class="marked0"><a name="line17"></a>17 module GData
+</span><span class="marked1"><a name="line18"></a>18   class GoogleAuthSub    
+</span><span class="inferred0"><a name="line19"></a>19     
+</span><span class="inferred1"><a name="line20"></a>20     # extract signature from header
+</span><span class="marked0"><a name="line21"></a>21     def sig(header)
+</span><span class="uncovered1"><a name="line22"></a>22       s = header.match(/^.*sig=&quot;(.*)&quot;/m)
+</span><span class="uncovered0"><a name="line23"></a>23       s[1] if !s.nil?
+</span><span class="uncovered1"><a name="line24"></a>24     end
+</span><span class="inferred0"><a name="line25"></a>25     
+</span><span class="marked1"><a name="line26"></a>26     def auth_header(request, url)
+</span><span class="uncovered0"><a name="line27"></a>27       authorization_header(request, url)
+</span><span class="uncovered1"><a name="line28"></a>28     end
+</span><span class="uncovered0"><a name="line29"></a>29   end
+</span><span class="uncovered1"><a name="line30"></a>30 end
 </span></pre><hr/>
     <p>Generated using the <a href='http://eigenclass.org/hiki.rb?rcov'>rcov code coverage analysis tool for Ruby</a>
    version 0.8.1.2.</p>

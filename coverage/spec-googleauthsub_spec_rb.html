@@ -553,7 +553,7 @@ span.run100 {
 </style>
     </head>
   <body><h3>C0 code coverage information</h3>
-    <p>Generated on Mon Mar 17 13:10:25 +1000 2008 with <a href='http://eigenclass.org/hiki/rcov'>rcov 0.8.1.2</a>
+    <p>Generated on Sat Jun 07 16:45:06 +1000 2008 with <a href='http://eigenclass.org/hiki/rcov'>rcov 0.8.1.2</a>
       </p>
     <hr/>
     <pre><span class='marked0'>Code reported as executed by Ruby looks like this...
@@ -571,24 +571,24 @@ span.run100 {
     </thead>
   <tbody><tr class='light'><td><a href='spec-googleauthsub_spec_rb.html'>spec/googleauthsub_spec.rb</a>
         </td>
-      <td class='lines_total'><tt>317</tt>
+      <td class='lines_total'><tt>340</tt>
         </td>
-      <td class='lines_code'><tt>226</tt>
+      <td class='lines_code'><tt>248</tt>
         </td>
-      <td><table cellspacing='0' cellpadding='0' align='right'><tr><td><tt class='coverage_total'>9.8%</tt>
+      <td><table cellspacing='0' cellpadding='0' align='right'><tr><td><tt class='coverage_total'>9.1%</tt>
               &nbsp;</td>
-            <td><table cellspacing='0' class='percent_graph' cellpadding='0' width='100'><tr><td class='covered' width='10'/>
-                  <td class='uncovered' width='90'/>
+            <td><table cellspacing='0' class='percent_graph' cellpadding='0' width='100'><tr><td class='covered' width='9'/>
+                  <td class='uncovered' width='91'/>
                   </tr>
                 </table>
               </td>
             </tr>
           </table>
         </td>
-      <td><table cellspacing='0' cellpadding='0' align='right'><tr><td><tt class='coverage_code'>2.7%</tt>
+      <td><table cellspacing='0' cellpadding='0' align='right'><tr><td><tt class='coverage_code'>2.4%</tt>
               &nbsp;</td>
-            <td><table cellspacing='0' class='percent_graph' cellpadding='0' width='100'><tr><td class='covered' width='3'/>
-                  <td class='uncovered' width='97'/>
+            <td><table cellspacing='0' class='percent_graph' cellpadding='0' width='100'><tr><td class='covered' width='2'/>
+                  <td class='uncovered' width='98'/>
                   </tr>
                 </table>
               </td>
@@ -598,323 +598,346 @@ span.run100 {
       </tr>
     </tbody>
   </table>
-<pre><span class="inferred1"><a name="line1"></a>  1 # GoogleAuthSub - Ruby on Rails plugin for Google Authorization
-</span><span class="inferred0"><a name="line2"></a>  2 # # Copyright 2008 Stuart Coyle &lt;stuart.coyle@gmail.com&gt;
-</span><span class="inferred1"><a name="line3"></a>  3 # 
-</span><span class="inferred0"><a name="line4"></a>  4 # Permission is hereby granted, free of charge, to any person obtaining
-</span><span class="inferred1"><a name="line5"></a>  5 # a copy of this software and associated documentation files (the
-</span><span class="inferred0"><a name="line6"></a>  6 # &quot;Software&quot;), to deal in the Software without restriction, including
-</span><span class="inferred1"><a name="line7"></a>  7 # without limitation the rights to use, copy, modify, merge, publish,
-</span><span class="inferred0"><a name="line8"></a>  8 # distribute, sublicense, and/or sell copies of the Software, and to
-</span><span class="inferred1"><a name="line9"></a>  9 # permit persons to whom the Software is furnished to do so, subject to
-</span><span class="inferred0"><a name="line10"></a> 10 # the following conditions:
-</span><span class="inferred1"><a name="line11"></a> 11 # 
-</span><span class="inferred0"><a name="line12"></a> 12 # The above copyright notice and this permission notice shall be
-</span><span class="inferred1"><a name="line13"></a> 13 # included in all copies or substantial portions of the Software.
-</span><span class="inferred0"><a name="line14"></a> 14 # 
-</span><span class="inferred1"><a name="line15"></a> 15 # THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND,
-</span><span class="inferred0"><a name="line16"></a> 16 # EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-</span><span class="inferred1"><a name="line17"></a> 17 # MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-</span><span class="inferred0"><a name="line18"></a> 18 # NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-</span><span class="inferred1"><a name="line19"></a> 19 # LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-</span><span class="inferred0"><a name="line20"></a> 20 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-</span><span class="inferred1"><a name="line21"></a> 21 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-</span><span class="inferred0"><a name="line22"></a> 22 
-</span><span class="inferred1"><a name="line23"></a> 23 
-</span><span class="marked0"><a name="line24"></a> 24 require File.dirname(__FILE__) + '/spec_helper'
-</span><span class="marked1"><a name="line25"></a> 25 require 'fake_web'
-</span><span class="marked0"><a name="line26"></a> 26 require 'net/http'
-</span><span class="marked1"><a name="line27"></a> 27 require 'openssl'
-</span><span class="inferred0"><a name="line28"></a> 28 
-</span><span class="marked1"><a name="line29"></a> 29 include GData 
-</span><span class="inferred0"><a name="line30"></a> 30 
-</span><span class="marked1"><a name="line31"></a> 31 describe GoogleAuthSub do
-</span><span class="uncovered0"><a name="line32"></a> 32 
-</span><span class="uncovered1"><a name="line33"></a> 33   before do
-</span><span class="uncovered0"><a name="line34"></a> 34 
-</span><span class="uncovered1"><a name="line35"></a> 35     @test_next_url = &quot;http://www.example.com/next&quot;
-</span><span class="uncovered0"><a name="line36"></a> 36     @test_scope_url = &quot;http://www.google.com/calendar/feeds&quot;
-</span><span class="uncovered1"><a name="line37"></a> 37     
-</span><span class="uncovered0"><a name="line38"></a> 38     # Valid test token
-</span><span class="uncovered1"><a name="line39"></a> 39     @token = TOKEN
-</span><span class="uncovered0"><a name="line40"></a> 40     
-</span><span class="uncovered1"><a name="line41"></a> 41     # Invalid test token
-</span><span class="uncovered0"><a name="line42"></a> 42     @invalid_token = INVALID_TOKEN
-</span><span class="uncovered1"><a name="line43"></a> 43     @session_token = SESSION_TOKEN
-</span><span class="uncovered0"><a name="line44"></a> 44  
-</span><span class="uncovered1"><a name="line45"></a> 45     # Various URLs we expect to call
-</span><span class="uncovered0"><a name="line46"></a> 46     @valid_request_url = &quot;https://www.google.com/accounts/AuthSubRequest?next=http://www.example.com/next&amp;scope=http://www.google.com/calendar/feeds&amp;session=0&amp;secure=0&quot;
-</span><span class="uncovered1"><a name="line47"></a> 47     @valid_session_request_url = &quot;https://www.google.com/accounts/AuthSubRequest?next=http://www.example.com/next&amp;scope=http://www.google.com/calendar/feeds&amp;session=1&amp;secure=0&quot;
-</span><span class="uncovered0"><a name="line48"></a> 48     @valid_secure_session_url = &quot;https://www.google.com/accounts/AuthSubRequest?next=http://www.example.com/next&amp;scope=http://www.google.com/calendar/feeds&amp;session=1&amp;secure=1&quot;
-</span><span class="uncovered1"><a name="line49"></a> 49     @session_token_request_url = &quot;https://www.google.com/accounts/AuthSubSessionToken&quot;
-</span><span class="uncovered0"><a name="line50"></a> 50     @token_revoke_url = &quot;https://www.google.com/accounts/AuthSubRevokeToken&quot;
-</span><span class="uncovered1"><a name="line51"></a> 51     @token_info_url = &quot;https://www.google.com/accounts/AuthSubTokenInfo&quot;
-</span><span class="uncovered0"><a name="line52"></a> 52     @data_request_url = @test_scope_url + &quot;/default/private/full&quot;
-</span><span class="uncovered1"><a name="line53"></a> 53 
-</span><span class="uncovered0"><a name="line54"></a> 54     @authsub = GoogleAuthSub.new({:next_url =&gt; @test_next_url, :scope_url =&gt; @test_scope_url})
-</span><span class="uncovered1"><a name="line55"></a> 55   end
-</span><span class="uncovered0"><a name="line56"></a> 56 
-</span><span class="uncovered1"><a name="line57"></a> 57   describe &quot;Methods GoogleAuthsubToken should have&quot; do
-</span><span class="uncovered0"><a name="line58"></a> 58 
-</span><span class="uncovered1"><a name="line59"></a> 59     it &quot;should have a request_url method&quot; do
-</span><span class="uncovered0"><a name="line60"></a> 60       @authsub.should respond_to(:request_url)
-</span><span class="uncovered1"><a name="line61"></a> 61     end
-</span><span class="uncovered0"><a name="line62"></a> 62 
-</span><span class="uncovered1"><a name="line63"></a> 63     it &quot;should have a get_session_token method&quot; do
-</span><span class="uncovered0"><a name="line64"></a> 64       @authsub.should respond_to(:session_token)
-</span><span class="uncovered1"><a name="line65"></a> 65     end
-</span><span class="uncovered0"><a name="line66"></a> 66 
-</span><span class="uncovered1"><a name="line67"></a> 67     it &quot;should have an revoke_token method&quot; do
-</span><span class="uncovered0"><a name="line68"></a> 68       @authsub.should respond_to(:revoke_token)
-</span><span class="uncovered1"><a name="line69"></a> 69     end
-</span><span class="uncovered0"><a name="line70"></a> 70 
-</span><span class="uncovered1"><a name="line71"></a> 71     it &quot;should have a token_info method&quot; do
-</span><span class="uncovered0"><a name="line72"></a> 72       @authsub.should respond_to(:token_info)
-</span><span class="uncovered1"><a name="line73"></a> 73     end
-</span><span class="uncovered0"><a name="line74"></a> 74 
-</span><span class="uncovered1"><a name="line75"></a> 75     it &quot;should have a get method&quot; do
-</span><span class="uncovered0"><a name="line76"></a> 76       @authsub.should respond_to(:get)
-</span><span class="uncovered1"><a name="line77"></a> 77     end
-</span><span class="uncovered0"><a name="line78"></a> 78     
-</span><span class="uncovered1"><a name="line79"></a> 79     it &quot;should have a post method&quot; do
-</span><span class="uncovered0"><a name="line80"></a> 80       @authsub.should respond_to(:post)
-</span><span class="uncovered1"><a name="line81"></a> 81     end
-</span><span class="uncovered0"><a name="line82"></a> 82     
-</span><span class="uncovered1"><a name="line83"></a> 83   end
-</span><span class="uncovered0"><a name="line84"></a> 84 
-</span><span class="uncovered1"><a name="line85"></a> 85   describe &quot;Request method - getting a single use token from Google&quot; do
-</span><span class="uncovered0"><a name="line86"></a> 86 
-</span><span class="uncovered1"><a name="line87"></a> 87     it &quot;should redirect to request url&quot; do
-</span><span class="uncovered0"><a name="line88"></a> 88       @authsub.request_url.to_s.should == @valid_request_url
-</span><span class="uncovered1"><a name="line89"></a> 89     end
-</span><span class="uncovered0"><a name="line90"></a> 90 
-</span><span class="uncovered1"><a name="line91"></a> 91     it &quot;should redirect to request url with session = true&quot; do
-</span><span class="uncovered0"><a name="line92"></a> 92       @authsub.session = true
-</span><span class="uncovered1"><a name="line93"></a> 93       @authsub.request_url.to_s.should == @valid_session_request_url
-</span><span class="uncovered0"><a name="line94"></a> 94     end
-</span><span class="uncovered1"><a name="line95"></a> 95 
-</span><span class="uncovered0"><a name="line96"></a> 96     it &quot;should redirect to request url with secure = true&quot; do
-</span><span class="uncovered1"><a name="line97"></a> 97       @authsub.session = true
-</span><span class="uncovered0"><a name="line98"></a> 98       @authsub.secure = true
-</span><span class="uncovered1"><a name="line99"></a> 99       @authsub.request_url.to_s.should == @valid_secure_session_url
-</span><span class="uncovered0"><a name="line100"></a>100      end
-</span><span class="uncovered1"><a name="line101"></a>101 
-</span><span class="uncovered0"><a name="line102"></a>102   end
-</span><span class="uncovered1"><a name="line103"></a>103 
-</span><span class="uncovered0"><a name="line104"></a>104   describe &quot;Token Signatures&quot; do
-</span><span class="uncovered1"><a name="line105"></a>105     before(:all) do
-</span><span class="uncovered0"><a name="line106"></a>106       # Private key for signing
-</span><span class="uncovered1"><a name="line107"></a>107       f = File.open(File.dirname(__FILE__)+&quot;/mock_certs/test_private_key.pem&quot;)
-</span><span class="uncovered0"><a name="line108"></a>108       @private_key = OpenSSL::PKey::RSA.new(f.read)
-</span><span class="uncovered1"><a name="line109"></a>109       @public_key = @private_key.public_key
-</span><span class="uncovered0"><a name="line110"></a>110       GoogleAuthSub.set_private_key(@private_key)
-</span><span class="uncovered1"><a name="line111"></a>111     end
-</span><span class="uncovered0"><a name="line112"></a>112     
-</span><span class="uncovered1"><a name="line113"></a>113     before do
-</span><span class="uncovered0"><a name="line114"></a>114        Time.stub!(:now).and_return(Time.local(2008,&quot;mar&quot;,8,12,15,1))
-</span><span class="uncovered1"><a name="line115"></a>115        OpenSSL::BN.stub!(:rand_range).and_return(100000000000000)
-</span><span class="uncovered0"><a name="line116"></a>116        FakeWeb.register_uri(@data_request_url, :response =&gt; File.dirname(__FILE__)+&quot;/mock responses/calendar.txt&quot;)
-</span><span class="uncovered1"><a name="line117"></a>117        @authsub.secure = true
-</span><span class="uncovered0"><a name="line118"></a>118        @authsub.token = @token 
-</span><span class="uncovered1"><a name="line119"></a>119        @header = @authsub.auth_header(Net::HTTP::Get, @data_request_url)
-</span><span class="uncovered0"><a name="line120"></a>120        @data = @authsub.auth_data(Net::HTTP::Get, @data_request_url) 
-</span><span class="uncovered1"><a name="line121"></a>121        @sig = @authsub.sig(@header)
-</span><span class="uncovered0"><a name="line122"></a>122     end
-</span><span class="uncovered1"><a name="line123"></a>123     
-</span><span class="uncovered0"><a name="line124"></a>124     it &quot;should have a signing algorithm&quot; do
-</span><span class="uncovered1"><a name="line125"></a>125       @authsub.should respond_to(:sigalg)
-</span><span class="uncovered0"><a name="line126"></a>126     end
-</span><span class="uncovered1"><a name="line127"></a>127     
-</span><span class="uncovered0"><a name="line128"></a>128     it &quot;should have rsa-sha1 as the sigalg&quot; do
-</span><span class="uncovered1"><a name="line129"></a>129       @authsub.sigalg.should == 'rsa-sha1'
-</span><span class="uncovered0"><a name="line130"></a>130     end
-</span><span class="uncovered1"><a name="line131"></a>131     
-</span><span class="uncovered0"><a name="line132"></a>132     it &quot;should generate a correct authorization header when not secure&quot; do
-</span><span class="uncovered1"><a name="line133"></a>133       @authsub.secure = false
-</span><span class="uncovered0"><a name="line134"></a>134       @authsub.auth_header(Net::HTTP::Get, @data_request_url).should == &quot;AuthSub token=\&quot;#{@token}\&quot;&quot;
-</span><span class="uncovered1"><a name="line135"></a>135     end
-</span><span class="uncovered0"><a name="line136"></a>136     
-</span><span class="uncovered1"><a name="line137"></a>137     it &quot;should generate a correct authorization header when secure&quot; do
-</span><span class="uncovered0"><a name="line138"></a>138        @authsub.auth_header(Net::HTTP::Get, @data_request_url).should match(/AuthSub token=&quot;#{@token}&quot; sigalg=&quot;rsa-sha1&quot; data=&quot;(.)*&quot; sig=(.)*$/)
-</span><span class="uncovered1"><a name="line139"></a>139     end
-</span><span class="uncovered0"><a name="line140"></a>140      
-</span><span class="uncovered1"><a name="line141"></a>141     it &quot;should have a valid data section in authorization header&quot; do
-</span><span class="uncovered0"><a name="line142"></a>142       @authsub.auth_data(Net::HTTP::Get, @data_request_url).should match(/^GET #{@data_request_url} #{Time.now.to_i} 100000000000000$/)
-</span><span class="uncovered1"><a name="line143"></a>143     end
-</span><span class="uncovered0"><a name="line144"></a>144     
-</span><span class="uncovered1"><a name="line145"></a>145     it &quot;should generate the correct signature for the token&quot; do
-</span><span class="uncovered0"><a name="line146"></a>146       @sig.should == Base64.b64encode(@private_key.sign(OpenSSL::Digest::SHA1.new,@data))
-</span><span class="uncovered1"><a name="line147"></a>147       #@public_key.verify(OpenSSL::Digest::SHA1.new, Base64.decode64(@sig), @data).should be_true
-</span><span class="uncovered0"><a name="line148"></a>148     end
-</span><span class="uncovered1"><a name="line149"></a>149     
-</span><span class="uncovered0"><a name="line150"></a>150     it &quot;should take private key as a  file&quot; do
-</span><span class="uncovered1"><a name="line151"></a>151       f = File.open(File.dirname(__FILE__)+&quot;/mock_certs/test_private_key.pem&quot;)
-</span><span class="uncovered0"><a name="line152"></a>152       GoogleAuthSub.set_private_key(f)
-</span><span class="uncovered1"><a name="line153"></a>153     end 
-</span><span class="uncovered0"><a name="line154"></a>154     
-</span><span class="uncovered1"><a name="line155"></a>155     it &quot;should take private key as a string&quot; do
-</span><span class="uncovered0"><a name="line156"></a>156       s = File.open(File.dirname(__FILE__)+&quot;/mock_certs/test_private_key.pem&quot;).read
-</span><span class="uncovered1"><a name="line157"></a>157       GoogleAuthSub.set_private_key(s)
-</span><span class="uncovered0"><a name="line158"></a>158     end
-</span><span class="uncovered1"><a name="line159"></a>159     
-</span><span class="uncovered0"><a name="line160"></a>160   end
-</span><span class="uncovered1"><a name="line161"></a>161 
-</span><span class="uncovered0"><a name="line162"></a>162   describe &quot;Token received from Google in response url. Note: in Rails this is simply params[:token]&quot; do
-</span><span class="uncovered1"><a name="line163"></a>163     before do
-</span><span class="uncovered0"><a name="line164"></a>164      url = URI::HTTP.build({:host =&gt; &quot;www.example.com&quot;, :path =&gt; &quot;/next&quot;, :query =&gt; &quot;Token=#{@token}&quot;})
-</span><span class="uncovered1"><a name="line165"></a>165      @authsub.receive_token(url)
-</span><span class="uncovered0"><a name="line166"></a>166     end
-</span><span class="uncovered1"><a name="line167"></a>167     
-</span><span class="uncovered0"><a name="line168"></a>168     it &quot;should find the token in the headers and save it&quot; do
-</span><span class="uncovered1"><a name="line169"></a>169       @authsub.token.should == @token
-</span><span class="uncovered0"><a name="line170"></a>170     end
-</span><span class="uncovered1"><a name="line171"></a>171     
-</span><span class="uncovered0"><a name="line172"></a>172     it &quot;should retain current token value if no token is found&quot; do
-</span><span class="uncovered1"><a name="line173"></a>173       url = URI::HTTP.build({:host =&gt; &quot;www.example.com&quot;, :path =&gt; &quot;/next&quot;, :query =&gt; &quot;&quot;})
-</span><span class="uncovered0"><a name="line174"></a>174       @authsub.receive_token(url)
-</span><span class="uncovered1"><a name="line175"></a>175       @authsub.token.should == @token
-</span><span class="uncovered0"><a name="line176"></a>176     end
-</span><span class="uncovered1"><a name="line177"></a>177   end
-</span><span class="uncovered0"><a name="line178"></a>178 
-</span><span class="uncovered1"><a name="line179"></a>179   describe &quot;Getting a session token from google&quot; do
-</span><span class="uncovered0"><a name="line180"></a>180     before do
-</span><span class="uncovered1"><a name="line181"></a>181       FakeWeb.register_uri(@session_token_request_url, :response =&gt; File.dirname(__FILE__)+&quot;/mock responses/session_token.txt&quot;)
-</span><span class="uncovered0"><a name="line182"></a>182     end
-</span><span class="uncovered1"><a name="line183"></a>183     
-</span><span class="uncovered0"><a name="line184"></a>184     it &quot;should make request to correct url&quot; do
-</span><span class="uncovered1"><a name="line185"></a>185       FakeWeb.should_receive(:response_for).with(@session_token_request_url).
-</span><span class="uncovered0"><a name="line186"></a>186       and_return(FakeWeb::Registry.instance.response_for(@session_token_request_url))
-</span><span class="uncovered1"><a name="line187"></a>187       @authsub.session_token
-</span><span class="uncovered0"><a name="line188"></a>188     end
-</span><span class="uncovered1"><a name="line189"></a>189 
-</span><span class="uncovered0"><a name="line190"></a>190   end
-</span><span class="uncovered1"><a name="line191"></a>191 
-</span><span class="uncovered0"><a name="line192"></a>192   describe &quot;Succesful receipt of a session token&quot; do
-</span><span class="uncovered1"><a name="line193"></a>193     before do
-</span><span class="uncovered0"><a name="line194"></a>194       FakeWeb.register_uri(@session_token_request_url, :response =&gt;  File.dirname(__FILE__)+&quot;/mock responses/session_token.txt&quot;)
-</span><span class="uncovered1"><a name="line195"></a>195     end
-</span><span class="uncovered0"><a name="line196"></a>196     
-</span><span class="uncovered1"><a name="line197"></a>197     it &quot;should set session_token in session to correct value&quot; do
-</span><span class="uncovered0"><a name="line198"></a>198       @authsub.session_token
-</span><span class="uncovered1"><a name="line199"></a>199       @authsub.token.should == @session_token
-</span><span class="uncovered0"><a name="line200"></a>200     end
-</span><span class="uncovered1"><a name="line201"></a>201   end
-</span><span class="uncovered0"><a name="line202"></a>202 
-</span><span class="uncovered1"><a name="line203"></a>203   describe &quot;Unsuccessful request for session token - revoked token&quot; do
-</span><span class="uncovered0"><a name="line204"></a>204       it &quot;should raise a server exception error&quot; do
-</span><span class="uncovered1"><a name="line205"></a>205         FakeWeb.register_uri(@session_token_request_url, :response =&gt;  File.dirname(__FILE__)+&quot;/mock responses/revoked_token.txt&quot;)
-</span><span class="uncovered0"><a name="line206"></a>206         lambda {
-</span><span class="uncovered1"><a name="line207"></a>207           @authsub.session_token
-</span><span class="uncovered0"><a name="line208"></a>208         }.should raise_error(RuntimeError)
-</span><span class="uncovered1"><a name="line209"></a>209       end
-</span><span class="uncovered0"><a name="line210"></a>210   end
-</span><span class="uncovered1"><a name="line211"></a>211 
-</span><span class="uncovered0"><a name="line212"></a>212   describe &quot;Revoking a session token&quot; do
-</span><span class="uncovered1"><a name="line213"></a>213     before do
-</span><span class="uncovered0"><a name="line214"></a>214       FakeWeb.register_uri(@token_revoke_url, :response =&gt; File.dirname(__FILE__)+&quot;/mock responses/revoke_token.txt&quot;)
-</span><span class="uncovered1"><a name="line215"></a>215       @authsub.token = @token
-</span><span class="uncovered0"><a name="line216"></a>216     end
-</span><span class="uncovered1"><a name="line217"></a>217     
-</span><span class="uncovered0"><a name="line218"></a>218     it &quot;should make request to correct url&quot; do
-</span><span class="uncovered1"><a name="line219"></a>219        FakeWeb.should_receive(:response_for).with(@token_revoke_url).
-</span><span class="uncovered0"><a name="line220"></a>220        and_return(FakeWeb::Registry.instance.response_for(@token_revoke_url))
-</span><span class="uncovered1"><a name="line221"></a>221        @authsub.revoke_token
-</span><span class="uncovered0"><a name="line222"></a>222      end
-</span><span class="uncovered1"><a name="line223"></a>223      
-</span><span class="uncovered0"><a name="line224"></a>224      it &quot;should return true&quot; do
-</span><span class="uncovered1"><a name="line225"></a>225       @authsub.revoke_token.should be_true
-</span><span class="uncovered0"><a name="line226"></a>226      end
-</span><span class="uncovered1"><a name="line227"></a>227      
-</span><span class="uncovered0"><a name="line228"></a>228      it &quot;should return false on an error&quot; do
-</span><span class="uncovered1"><a name="line229"></a>229        FakeWeb.register_uri(@token_revoke_url, :response =&gt; File.dirname(__FILE__)+&quot;/mock responses/unauthorized.txt&quot;)
-</span><span class="uncovered0"><a name="line230"></a>230        @authsub.revoke_token.should be_false
-</span><span class="uncovered1"><a name="line231"></a>231      end
-</span><span class="uncovered0"><a name="line232"></a>232   end
-</span><span class="uncovered1"><a name="line233"></a>233 
-</span><span class="uncovered0"><a name="line234"></a>234   describe &quot;Getting token info from google&quot; do
-</span><span class="uncovered1"><a name="line235"></a>235     before do
-</span><span class="uncovered0"><a name="line236"></a>236       FakeWeb.register_uri(@token_info_url, :response =&gt; File.dirname(__FILE__)+&quot;/mock responses/token_info.txt&quot;)
-</span><span class="uncovered1"><a name="line237"></a>237       @authsub.token = @token
-</span><span class="uncovered0"><a name="line238"></a>238     end
-</span><span class="uncovered1"><a name="line239"></a>239     
-</span><span class="uncovered0"><a name="line240"></a>240     it &quot;should make request to correct url&quot; do
-</span><span class="uncovered1"><a name="line241"></a>241       FakeWeb.should_receive(:response_for).with(@token_info_url).
-</span><span class="uncovered0"><a name="line242"></a>242           and_return(FakeWeb::Registry.instance.response_for(@token_info_url))
-</span><span class="uncovered1"><a name="line243"></a>243       @authsub.token_info
-</span><span class="uncovered0"><a name="line244"></a>244     end
-</span><span class="uncovered1"><a name="line245"></a>245     
-</span><span class="uncovered0"><a name="line246"></a>246     it &quot;should return the info as [:target =&gt; target, :scope=&gt; scope, :secure=&gt; secure]&quot; do
-</span><span class="uncovered1"><a name="line247"></a>247       @authsub.token_info.should == {:target=&gt;'http://www.example.com', 
-</span><span class="uncovered0"><a name="line248"></a>248                                              :scope=&gt;'http://www.google.com/calendar/feeds/', 
-</span><span class="uncovered1"><a name="line249"></a>249                                              :secure=&gt;true}
-</span><span class="uncovered0"><a name="line250"></a>250                                              
-</span><span class="uncovered1"><a name="line251"></a>251     end
-</span><span class="uncovered0"><a name="line252"></a>252     
-</span><span class="uncovered1"><a name="line253"></a>253     it &quot;should throw an error on an incorrect response from Google&quot; do
-</span><span class="uncovered0"><a name="line254"></a>254       FakeWeb.register_uri(@token_info_url, :response =&gt; File.dirname(__FILE__)+&quot;/mock responses/bad_token_info.txt&quot;)
-</span><span class="uncovered1"><a name="line255"></a>255       lambda{
-</span><span class="uncovered0"><a name="line256"></a>256         @authsub.token_info
-</span><span class="uncovered1"><a name="line257"></a>257       }.should raise_error(&quot;Google Authsub Error: invalid token info packet received.&quot;)
-</span><span class="uncovered0"><a name="line258"></a>258     end
-</span><span class="uncovered1"><a name="line259"></a>259   end
-</span><span class="uncovered0"><a name="line260"></a>260 
-</span><span class="uncovered1"><a name="line261"></a>261   describe &quot;Auto revocation of session tokens&quot; do
-</span><span class="uncovered0"><a name="line262"></a>262     it &quot;should revoke tokens after specified interval&quot; do
-</span><span class="uncovered1"><a name="line263"></a>263       #pending &quot;Auto revoke not yet implemented&quot;
-</span><span class="uncovered0"><a name="line264"></a>264     end
-</span><span class="uncovered1"><a name="line265"></a>265   end
-</span><span class="uncovered0"><a name="line266"></a>266 
-</span><span class="uncovered1"><a name="line267"></a>267   describe &quot;Get data from google using the token&quot; do
-</span><span class="uncovered0"><a name="line268"></a>268     before do
-</span><span class="uncovered1"><a name="line269"></a>269       FakeWeb.register_uri(@data_request_url, :response =&gt; File.dirname(__FILE__)+&quot;/mock responses/calendar.txt&quot;)
-</span><span class="uncovered0"><a name="line270"></a>270     end
-</span><span class="uncovered1"><a name="line271"></a>271     
-</span><span class="uncovered0"><a name="line272"></a>272     it &quot;should append the scope to the url when it does not start with http://&quot; do
-</span><span class="uncovered1"><a name="line273"></a>273       FakeWeb.should_receive(:response_for).with(@data_request_url).
-</span><span class="uncovered0"><a name="line274"></a>274         and_return(FakeWeb::Registry.instance.response_for(@data_request_url))
-</span><span class="uncovered1"><a name="line275"></a>275       @authsub.get(&quot;/default/private/full&quot;)
-</span><span class="uncovered0"><a name="line276"></a>276     end
-</span><span class="uncovered1"><a name="line277"></a>277     
-</span><span class="uncovered0"><a name="line278"></a>278     it &quot;should raise errors if there is an error in the response&quot; do 
-</span><span class="uncovered1"><a name="line279"></a>279       FakeWeb.register_uri(@data_request_url, :response =&gt; File.dirname(__FILE__)+&quot;/mock responses/unauthorized.txt&quot;)
-</span><span class="uncovered0"><a name="line280"></a>280       lambda{@authsub.get(@data_request_url)}.should raise_error(Net::HTTPServerException)
-</span><span class="uncovered1"><a name="line281"></a>281     end
-</span><span class="uncovered0"><a name="line282"></a>282     
-</span><span class="uncovered1"><a name="line283"></a>283     it &quot;should pass the entire response as a Net::HTTPResponse object&quot; do
-</span><span class="uncovered0"><a name="line284"></a>284       @authsub.get(@data_request_url).should be_a_kind_of(Net::HTTPResponse)
-</span><span class="uncovered1"><a name="line285"></a>285     end
-</span><span class="uncovered0"><a name="line286"></a>286     
-</span><span class="uncovered1"><a name="line287"></a>287     it &quot;should have the correct body&quot; do
-</span><span class="uncovered0"><a name="line288"></a>288       @authsub.get(@data_request_url).body.should == &quot;This is my wonderful calendar!\nEmpty as usual.\nHire me!!&quot;
-</span><span class="uncovered1"><a name="line289"></a>289     end
-</span><span class="uncovered0"><a name="line290"></a>290   end
-</span><span class="uncovered1"><a name="line291"></a>291   
-</span><span class="uncovered0"><a name="line292"></a>292   describe &quot;Post Data to Goole using the token&quot; do
-</span><span class="uncovered1"><a name="line293"></a>293       before do
-</span><span class="uncovered0"><a name="line294"></a>294          FakeWeb.register_uri(@data_request_url, :response =&gt; File.dirname(__FILE__)+&quot;/mock responses/calendar.txt&quot;)
-</span><span class="uncovered1"><a name="line295"></a>295       end 
-</span><span class="uncovered0"><a name="line296"></a>296 
-</span><span class="uncovered1"><a name="line297"></a>297       it &quot;should append the scope to the url when it does not start with http://&quot; do
-</span><span class="uncovered0"><a name="line298"></a>298         FakeWeb.should_receive(:response_for).with(@data_request_url).
-</span><span class="uncovered1"><a name="line299"></a>299           and_return(FakeWeb::Registry.instance.response_for(@data_request_url))
-</span><span class="uncovered0"><a name="line300"></a>300         @authsub.post(&quot;/default/private/full&quot;)
-</span><span class="uncovered1"><a name="line301"></a>301       end
-</span><span class="uncovered0"><a name="line302"></a>302 
-</span><span class="uncovered1"><a name="line303"></a>303       it &quot;should raise errors if there is an error in the response&quot; do 
-</span><span class="uncovered0"><a name="line304"></a>304         FakeWeb.register_uri(@data_request_url, :response =&gt; File.dirname(__FILE__)+&quot;/mock responses/unauthorized.txt&quot;)
-</span><span class="uncovered1"><a name="line305"></a>305         lambda{@authsub.post(@data_request_url)}.should raise_error(Net::HTTPServerException)
-</span><span class="uncovered0"><a name="line306"></a>306       end
-</span><span class="uncovered1"><a name="line307"></a>307 
-</span><span class="uncovered0"><a name="line308"></a>308       it &quot;should pass the entire response as a Net::HTTPResponse object&quot; do
-</span><span class="uncovered1"><a name="line309"></a>309         @authsub.post(@data_request_url).should be_a_kind_of(Net::HTTPResponse)
-</span><span class="uncovered0"><a name="line310"></a>310       end
-</span><span class="uncovered1"><a name="line311"></a>311 
-</span><span class="uncovered0"><a name="line312"></a>312       it &quot;should have the correct body&quot; do
-</span><span class="uncovered1"><a name="line313"></a>313         @authsub.post(@data_request_url).body.should == &quot;This is my wonderful calendar!\nEmpty as usual.\nHire me!!&quot;
-</span><span class="uncovered0"><a name="line314"></a>314       end
-</span><span class="uncovered1"><a name="line315"></a>315   end
-</span><span class="uncovered0"><a name="line316"></a>316   
-</span><span class="uncovered1"><a name="line317"></a>317 end
+<pre><span class="inferred0"><a name="line1"></a>  1 # GoogleAuthSub - Ruby on Rails plugin for Google Authorization
+</span><span class="inferred1"><a name="line2"></a>  2 # # Copyright 2008 Stuart Coyle &lt;stuart.coyle@gmail.com&gt;
+</span><span class="inferred0"><a name="line3"></a>  3 # 
+</span><span class="inferred1"><a name="line4"></a>  4 # Permission is hereby granted, free of charge, to any person obtaining
+</span><span class="inferred0"><a name="line5"></a>  5 # a copy of this software and associated documentation files (the
+</span><span class="inferred1"><a name="line6"></a>  6 # &quot;Software&quot;), to deal in the Software without restriction, including
+</span><span class="inferred0"><a name="line7"></a>  7 # without limitation the rights to use, copy, modify, merge, publish,
+</span><span class="inferred1"><a name="line8"></a>  8 # distribute, sublicense, and/or sell copies of the Software, and to
+</span><span class="inferred0"><a name="line9"></a>  9 # permit persons to whom the Software is furnished to do so, subject to
+</span><span class="inferred1"><a name="line10"></a> 10 # the following conditions:
+</span><span class="inferred0"><a name="line11"></a> 11 # 
+</span><span class="inferred1"><a name="line12"></a> 12 # The above copyright notice and this permission notice shall be
+</span><span class="inferred0"><a name="line13"></a> 13 # included in all copies or substantial portions of the Software.
+</span><span class="inferred1"><a name="line14"></a> 14 # 
+</span><span class="inferred0"><a name="line15"></a> 15 # THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND,
+</span><span class="inferred1"><a name="line16"></a> 16 # EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+</span><span class="inferred0"><a name="line17"></a> 17 # MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+</span><span class="inferred1"><a name="line18"></a> 18 # NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+</span><span class="inferred0"><a name="line19"></a> 19 # LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+</span><span class="inferred1"><a name="line20"></a> 20 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+</span><span class="inferred0"><a name="line21"></a> 21 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+</span><span class="inferred1"><a name="line22"></a> 22 
+</span><span class="inferred0"><a name="line23"></a> 23 
+</span><span class="marked1"><a name="line24"></a> 24 require File.dirname(__FILE__) + '/spec_helper'
+</span><span class="marked0"><a name="line25"></a> 25 require 'fake_web'
+</span><span class="marked1"><a name="line26"></a> 26 require 'net/http'
+</span><span class="marked0"><a name="line27"></a> 27 require 'openssl'
+</span><span class="inferred1"><a name="line28"></a> 28 
+</span><span class="marked0"><a name="line29"></a> 29 include GData 
+</span><span class="inferred1"><a name="line30"></a> 30 
+</span><span class="marked0"><a name="line31"></a> 31 describe GoogleAuthSub do
+</span><span class="uncovered1"><a name="line32"></a> 32 
+</span><span class="uncovered0"><a name="line33"></a> 33   before do
+</span><span class="uncovered1"><a name="line34"></a> 34 
+</span><span class="uncovered0"><a name="line35"></a> 35     @test_next_url = &quot;http://www.example.com/next&quot;
+</span><span class="uncovered1"><a name="line36"></a> 36     @test_scope_url = &quot;http://www.google.com/calendar/feeds&quot;
+</span><span class="uncovered0"><a name="line37"></a> 37     
+</span><span class="uncovered1"><a name="line38"></a> 38     # Valid test token
+</span><span class="uncovered0"><a name="line39"></a> 39     @token = TOKEN
+</span><span class="uncovered1"><a name="line40"></a> 40     
+</span><span class="uncovered0"><a name="line41"></a> 41     # Invalid test token
+</span><span class="uncovered1"><a name="line42"></a> 42     @invalid_token = INVALID_TOKEN
+</span><span class="uncovered0"><a name="line43"></a> 43     @session_token = SESSION_TOKEN
+</span><span class="uncovered1"><a name="line44"></a> 44  
+</span><span class="uncovered0"><a name="line45"></a> 45     # Various URLs we expect to call
+</span><span class="uncovered1"><a name="line46"></a> 46     @valid_request_url = AUTHSUB_REQUEST_URL + &quot;?next=http://www.example.com/next&amp;scope=http://www.google.com/calendar/feeds&amp;session=0&amp;secure=0&quot;
+</span><span class="uncovered0"><a name="line47"></a> 47     @valid_session_request_url = AUTHSUB_REQUEST_URL + &quot;?next=http://www.example.com/next&amp;scope=http://www.google.com/calendar/feeds&amp;session=1&amp;secure=0&quot;
+</span><span class="uncovered1"><a name="line48"></a> 48     @valid_secure_session_url = AUTHSUB_REQUEST_URL + &quot;?next=http://www.example.com/next&amp;scope=http://www.google.com/calendar/feeds&amp;session=1&amp;secure=1&quot;
+</span><span class="uncovered0"><a name="line49"></a> 49     @session_token_request_url = AUTHSUB_SESSION_TOKEN_URL
+</span><span class="uncovered1"><a name="line50"></a> 50     @token_revoke_url = AUTHSUB_REVOKE_TOKEN_URL
+</span><span class="uncovered0"><a name="line51"></a> 51     @token_info_url = AUTHSUB_TOKEN_INFO_URL
+</span><span class="uncovered1"><a name="line52"></a> 52     @data_request_url = @test_scope_url + &quot;/default/private/full&quot;
+</span><span class="uncovered0"><a name="line53"></a> 53 
+</span><span class="uncovered1"><a name="line54"></a> 54     @authsub = GoogleAuthSub.new({:next_url =&gt; @test_next_url, :scope_url =&gt; @test_scope_url})
+</span><span class="uncovered0"><a name="line55"></a> 55   end
+</span><span class="uncovered1"><a name="line56"></a> 56 
+</span><span class="uncovered0"><a name="line57"></a> 57   describe &quot;Methods GoogleAuthsubToken should have&quot; do
+</span><span class="uncovered1"><a name="line58"></a> 58 
+</span><span class="uncovered0"><a name="line59"></a> 59     it &quot;should have a request_url method&quot; do
+</span><span class="uncovered1"><a name="line60"></a> 60       @authsub.should respond_to(:request_url)
+</span><span class="uncovered0"><a name="line61"></a> 61     end
+</span><span class="uncovered1"><a name="line62"></a> 62 
+</span><span class="uncovered0"><a name="line63"></a> 63     it &quot;should have a get_session_token method&quot; do
+</span><span class="uncovered1"><a name="line64"></a> 64       @authsub.should respond_to(:session_token)
+</span><span class="uncovered0"><a name="line65"></a> 65     end
+</span><span class="uncovered1"><a name="line66"></a> 66 
+</span><span class="uncovered0"><a name="line67"></a> 67     it &quot;should have an revoke_token method&quot; do
+</span><span class="uncovered1"><a name="line68"></a> 68       @authsub.should respond_to(:revoke_token)
+</span><span class="uncovered0"><a name="line69"></a> 69     end
+</span><span class="uncovered1"><a name="line70"></a> 70 
+</span><span class="uncovered0"><a name="line71"></a> 71     it &quot;should have a token_info method&quot; do
+</span><span class="uncovered1"><a name="line72"></a> 72       @authsub.should respond_to(:token_info)
+</span><span class="uncovered0"><a name="line73"></a> 73     end
+</span><span class="uncovered1"><a name="line74"></a> 74 
+</span><span class="uncovered0"><a name="line75"></a> 75     it &quot;should have a get method&quot; do
+</span><span class="uncovered1"><a name="line76"></a> 76       @authsub.should respond_to(:get)
+</span><span class="uncovered0"><a name="line77"></a> 77     end
+</span><span class="uncovered1"><a name="line78"></a> 78     
+</span><span class="uncovered0"><a name="line79"></a> 79     it &quot;should have a post method&quot; do
+</span><span class="uncovered1"><a name="line80"></a> 80       @authsub.should respond_to(:post)
+</span><span class="uncovered0"><a name="line81"></a> 81     end
+</span><span class="uncovered1"><a name="line82"></a> 82     
+</span><span class="uncovered0"><a name="line83"></a> 83     it &quot;should have a put method&quot; do
+</span><span class="uncovered1"><a name="line84"></a> 84       @authsub.should respond_to(:put)
+</span><span class="uncovered0"><a name="line85"></a> 85     end
+</span><span class="uncovered1"><a name="line86"></a> 86     
+</span><span class="uncovered0"><a name="line87"></a> 87     it &quot;should have a delete method&quot; do
+</span><span class="uncovered1"><a name="line88"></a> 88       @authsub.should respond_to(:delete)
+</span><span class="uncovered0"><a name="line89"></a> 89     end
+</span><span class="uncovered1"><a name="line90"></a> 90   end
+</span><span class="uncovered0"><a name="line91"></a> 91 
+</span><span class="uncovered1"><a name="line92"></a> 92   describe &quot;Request method - getting a single use token from Google&quot; do
+</span><span class="uncovered0"><a name="line93"></a> 93 
+</span><span class="uncovered1"><a name="line94"></a> 94     it &quot;should redirect to request url&quot; do
+</span><span class="uncovered0"><a name="line95"></a> 95       @authsub.request_url.to_s.should == @valid_request_url
+</span><span class="uncovered1"><a name="line96"></a> 96     end
+</span><span class="uncovered0"><a name="line97"></a> 97 
+</span><span class="uncovered1"><a name="line98"></a> 98     it &quot;should redirect to request url with session = true&quot; do
+</span><span class="uncovered0"><a name="line99"></a> 99       @authsub.session = true
+</span><span class="uncovered1"><a name="line100"></a>100       @authsub.request_url.to_s.should == @valid_session_request_url
+</span><span class="uncovered0"><a name="line101"></a>101     end
+</span><span class="uncovered1"><a name="line102"></a>102 
+</span><span class="uncovered0"><a name="line103"></a>103     it &quot;should redirect to request url with secure = true&quot; do
+</span><span class="uncovered1"><a name="line104"></a>104       @authsub.session = true
+</span><span class="uncovered0"><a name="line105"></a>105       @authsub.secure = true
+</span><span class="uncovered1"><a name="line106"></a>106       @authsub.request_url.to_s.should == @valid_secure_session_url
+</span><span class="uncovered0"><a name="line107"></a>107      end
+</span><span class="uncovered1"><a name="line108"></a>108 
+</span><span class="uncovered0"><a name="line109"></a>109     it 'should raise an error if the scope URL is not a full path' do
+</span><span class="uncovered1"><a name="line110"></a>110       @authsub.scope = &quot;www.google.com/calendar/feeds&quot;
+</span><span class="uncovered0"><a name="line111"></a>111       lambda { @authsub.request_url }.should raise_error(AuthSubError)
+</span><span class="uncovered1"><a name="line112"></a>112     end
+</span><span class="uncovered0"><a name="line113"></a>113     
+</span><span class="uncovered1"><a name="line114"></a>114     it &quot;should raise an error if the next_url is not a full path&quot; do
+</span><span class="uncovered0"><a name="line115"></a>115       @authsub.next_url = &quot;www.schedy.com&quot; 
+</span><span class="uncovered1"><a name="line116"></a>116       lambda { @authsub.request_url }.should raise_error(AuthSubError)
+</span><span class="uncovered0"><a name="line117"></a>117     end
+</span><span class="uncovered1"><a name="line118"></a>118   end
+</span><span class="uncovered0"><a name="line119"></a>119 
+</span><span class="uncovered1"><a name="line120"></a>120   describe &quot;Token Signatures&quot; do
+</span><span class="uncovered0"><a name="line121"></a>121     before(:all) do
+</span><span class="uncovered1"><a name="line122"></a>122       # Private key for signing
+</span><span class="uncovered0"><a name="line123"></a>123       f = File.open(File.dirname(__FILE__)+&quot;/mock_certs/test_private_key.pem&quot;)
+</span><span class="uncovered1"><a name="line124"></a>124       @private_key = OpenSSL::PKey::RSA.new(f.read)
+</span><span class="uncovered0"><a name="line125"></a>125       @public_key = @private_key.public_key
+</span><span class="uncovered1"><a name="line126"></a>126       GoogleAuthSub.set_private_key(@private_key)
+</span><span class="uncovered0"><a name="line127"></a>127     end
+</span><span class="uncovered1"><a name="line128"></a>128     
+</span><span class="uncovered0"><a name="line129"></a>129     before do
+</span><span class="uncovered1"><a name="line130"></a>130        Time.stub!(:now).and_return(Time.local(2008,&quot;mar&quot;,8,12,15,1)) # == 1204942501 
+</span><span class="uncovered0"><a name="line131"></a>131        OpenSSL::BN.stub!(:rand_range).and_return(100000000000000)
+</span><span class="uncovered1"><a name="line132"></a>132        FakeWeb.register_uri(@data_request_url, :response =&gt; File.dirname(__FILE__)+&quot;/mock responses/calendar.txt&quot;)
+</span><span class="uncovered0"><a name="line133"></a>133        @authsub.secure = true
+</span><span class="uncovered1"><a name="line134"></a>134        @authsub.token = @token
+</span><span class="uncovered0"><a name="line135"></a>135     end
+</span><span class="uncovered1"><a name="line136"></a>136     
+</span><span class="uncovered0"><a name="line137"></a>137     it &quot;should have a signing algorithm&quot; do
+</span><span class="uncovered1"><a name="line138"></a>138       @authsub.should respond_to(:sigalg)
+</span><span class="uncovered0"><a name="line139"></a>139     end
+</span><span class="uncovered1"><a name="line140"></a>140     
+</span><span class="uncovered0"><a name="line141"></a>141     it &quot;should have rsa-sha1 as the sigalg&quot; do
+</span><span class="uncovered1"><a name="line142"></a>142       @authsub.sigalg.should == 'rsa-sha1'
+</span><span class="uncovered0"><a name="line143"></a>143     end
+</span><span class="uncovered1"><a name="line144"></a>144     
+</span><span class="uncovered0"><a name="line145"></a>145     it &quot;should generate a correct authorization header when not secure&quot; do
+</span><span class="uncovered1"><a name="line146"></a>146       @authsub.secure = false
+</span><span class="uncovered0"><a name="line147"></a>147       @authsub.auth_header(Net::HTTP::Get.new(@data_request_url), @data_request_url).should == &quot;AuthSub token=\&quot;#{@token}\&quot;&quot;
+</span><span class="uncovered1"><a name="line148"></a>148     end
+</span><span class="uncovered0"><a name="line149"></a>149     
+</span><span class="uncovered1"><a name="line150"></a>150     it &quot;should generate a correct authorization header when secure&quot; do
+</span><span class="uncovered0"><a name="line151"></a>151       @authsub.auth_header(Net::HTTP::Get.new(@data_request_url), @data_request_url).should == 
+</span><span class="uncovered1"><a name="line152"></a>152       &quot;AuthSub token=\&quot;CMScoaHmDxC80Y2pAg\&quot; data=\&quot;GET http://www.google.com/calendar/feeds/default/private/full 1204942501 100000000000000\&quot; sig=\&quot;5H44KRwb+B9dMraK0mxsVv3aSF+gCz1hz7FEMViYdl89rC/BXQkmW7Xb9/Xf\n226E5Q+RPtFd+DaK/mXFxtoOJBqlz7mZgV+QOrr/dxCM6HpjIpxF9Qxo9zCT\nKvz0IS4gxXCVMgEgJOdF3YjqZo2bMgiG/Wjm/774Yitkc2tKhL8=\n\&quot; sigalg=\&quot;rsa-sha1\&quot;&quot;  
+</span><span class="uncovered0"><a name="line153"></a>153     end
+</span><span class="uncovered1"><a name="line154"></a>154     
+</span><span class="uncovered0"><a name="line155"></a>155     
+</span><span class="uncovered1"><a name="line156"></a>156     it &quot;should take private key as a  file&quot; do
+</span><span class="uncovered0"><a name="line157"></a>157       f = File.open(File.dirname(__FILE__)+&quot;/mock_certs/test_private_key.pem&quot;)
+</span><span class="uncovered1"><a name="line158"></a>158       GoogleAuthSub.set_private_key(f)
+</span><span class="uncovered0"><a name="line159"></a>159     end 
+</span><span class="uncovered1"><a name="line160"></a>160     
+</span><span class="uncovered0"><a name="line161"></a>161     it &quot;should take private key as a string&quot; do
+</span><span class="uncovered1"><a name="line162"></a>162       s = File.open(File.dirname(__FILE__)+&quot;/mock_certs/test_private_key.pem&quot;).read
+</span><span class="uncovered0"><a name="line163"></a>163       GoogleAuthSub.set_private_key(s)
+</span><span class="uncovered1"><a name="line164"></a>164     end
+</span><span class="uncovered0"><a name="line165"></a>165     
+</span><span class="uncovered1"><a name="line166"></a>166   end
+</span><span class="uncovered0"><a name="line167"></a>167 
+</span><span class="uncovered1"><a name="line168"></a>168   describe &quot;Token received from Google in response url. Note: in Rails this is simply params[:token]&quot; do
+</span><span class="uncovered0"><a name="line169"></a>169     before do
+</span><span class="uncovered1"><a name="line170"></a>170      url = URI::HTTP.build({:host =&gt; &quot;www.example.com&quot;, :path =&gt; &quot;/next&quot;, :query =&gt; &quot;token=#{@token}&quot;})
+</span><span class="uncovered0"><a name="line171"></a>171      @authsub.receive_token(url)
+</span><span class="uncovered1"><a name="line172"></a>172     end
+</span><span class="uncovered0"><a name="line173"></a>173     
+</span><span class="uncovered1"><a name="line174"></a>174     it &quot;should find the token in the headers and save it&quot; do
+</span><span class="uncovered0"><a name="line175"></a>175       @authsub.token.should == @token
+</span><span class="uncovered1"><a name="line176"></a>176     end
+</span><span class="uncovered0"><a name="line177"></a>177     
+</span><span class="uncovered1"><a name="line178"></a>178     it &quot;should retain current token value if no token is found&quot; do
+</span><span class="uncovered0"><a name="line179"></a>179       url = URI::HTTP.build({:host =&gt; &quot;www.example.com&quot;, :path =&gt; &quot;/next&quot;, :query =&gt; &quot;&quot;})
+</span><span class="uncovered1"><a name="line180"></a>180       @authsub.receive_token(url)
+</span><span class="uncovered0"><a name="line181"></a>181       @authsub.token.should == @token
+</span><span class="uncovered1"><a name="line182"></a>182     end
+</span><span class="uncovered0"><a name="line183"></a>183     
+</span><span class="uncovered1"><a name="line184"></a>184   end
+</span><span class="uncovered0"><a name="line185"></a>185 
+</span><span class="uncovered1"><a name="line186"></a>186   describe &quot;Getting a session token from google&quot; do
+</span><span class="uncovered0"><a name="line187"></a>187     before do
+</span><span class="uncovered1"><a name="line188"></a>188       FakeWeb.register_uri(@session_token_request_url, :response =&gt; File.dirname(__FILE__)+&quot;/mock responses/session_token.txt&quot;)
+</span><span class="uncovered0"><a name="line189"></a>189     end
+</span><span class="uncovered1"><a name="line190"></a>190     
+</span><span class="uncovered0"><a name="line191"></a>191     it &quot;should make request to correct url&quot; do
+</span><span class="uncovered1"><a name="line192"></a>192       FakeWeb.should_receive(:response_for).with(@session_token_request_url).
+</span><span class="uncovered0"><a name="line193"></a>193       and_return(FakeWeb::Registry.instance.response_for(@session_token_request_url))
+</span><span class="uncovered1"><a name="line194"></a>194       @authsub.session_token
+</span><span class="uncovered0"><a name="line195"></a>195     end
+</span><span class="uncovered1"><a name="line196"></a>196 
+</span><span class="uncovered0"><a name="line197"></a>197   end
+</span><span class="uncovered1"><a name="line198"></a>198 
+</span><span class="uncovered0"><a name="line199"></a>199   describe &quot;Succesful receipt of a session token&quot; do
+</span><span class="uncovered1"><a name="line200"></a>200     before do
+</span><span class="uncovered0"><a name="line201"></a>201       FakeWeb.register_uri(@session_token_request_url, :response =&gt;  File.dirname(__FILE__)+&quot;/mock responses/session_token.txt&quot;)
+</span><span class="uncovered1"><a name="line202"></a>202     end
+</span><span class="uncovered0"><a name="line203"></a>203     
+</span><span class="uncovered1"><a name="line204"></a>204     it &quot;should set session_token in session to correct value&quot; do
+</span><span class="uncovered0"><a name="line205"></a>205       @authsub.session_token
+</span><span class="uncovered1"><a name="line206"></a>206       @authsub.token.should == @session_token
+</span><span class="uncovered0"><a name="line207"></a>207     end
+</span><span class="uncovered1"><a name="line208"></a>208   end
+</span><span class="uncovered0"><a name="line209"></a>209 
+</span><span class="uncovered1"><a name="line210"></a>210   describe &quot;Unsuccessful request for session token - revoked token&quot; do
+</span><span class="uncovered0"><a name="line211"></a>211       it &quot;should raise a server exception error&quot; do
+</span><span class="uncovered1"><a name="line212"></a>212         FakeWeb.register_uri(@session_token_request_url, :response =&gt;  File.dirname(__FILE__)+&quot;/mock responses/revoked_token.txt&quot;)
+</span><span class="uncovered0"><a name="line213"></a>213         lambda {
+</span><span class="uncovered1"><a name="line214"></a>214           @authsub.session_token
+</span><span class="uncovered0"><a name="line215"></a>215         }.should raise_error(AuthSubError)
+</span><span class="uncovered1"><a name="line216"></a>216       end
+</span><span class="uncovered0"><a name="line217"></a>217   end
+</span><span class="uncovered1"><a name="line218"></a>218 
+</span><span class="uncovered0"><a name="line219"></a>219   describe &quot;Revoking a session token&quot; do
+</span><span class="uncovered1"><a name="line220"></a>220     before do
+</span><span class="uncovered0"><a name="line221"></a>221       FakeWeb.register_uri(@token_revoke_url, :response =&gt; File.dirname(__FILE__)+&quot;/mock responses/revoke_token.txt&quot;)
+</span><span class="uncovered1"><a name="line222"></a>222       @authsub.token = @token
+</span><span class="uncovered0"><a name="line223"></a>223     end
+</span><span class="uncovered1"><a name="line224"></a>224     
+</span><span class="uncovered0"><a name="line225"></a>225     it &quot;should make request to correct url&quot; do
+</span><span class="uncovered1"><a name="line226"></a>226        FakeWeb.should_receive(:response_for).with(@token_revoke_url).
+</span><span class="uncovered0"><a name="line227"></a>227        and_return(FakeWeb::Registry.instance.response_for(@token_revoke_url))
+</span><span class="uncovered1"><a name="line228"></a>228        @authsub.revoke_token
+</span><span class="uncovered0"><a name="line229"></a>229      end
+</span><span class="uncovered1"><a name="line230"></a>230      
+</span><span class="uncovered0"><a name="line231"></a>231      it &quot;should return true&quot; do
+</span><span class="uncovered1"><a name="line232"></a>232       @authsub.revoke_token.should be_true
+</span><span class="uncovered0"><a name="line233"></a>233      end
+</span><span class="uncovered1"><a name="line234"></a>234      
+</span><span class="uncovered0"><a name="line235"></a>235      it &quot;should return false on an error&quot; do
+</span><span class="uncovered1"><a name="line236"></a>236        FakeWeb.register_uri(@token_revoke_url, :response =&gt; File.dirname(__FILE__)+&quot;/mock responses/unauthorized.txt&quot;)
+</span><span class="uncovered0"><a name="line237"></a>237        @authsub.revoke_token.should be_false
+</span><span class="uncovered1"><a name="line238"></a>238      end
+</span><span class="uncovered0"><a name="line239"></a>239   end
+</span><span class="uncovered1"><a name="line240"></a>240 
+</span><span class="uncovered0"><a name="line241"></a>241   describe &quot;Getting token info from google&quot; do
+</span><span class="uncovered1"><a name="line242"></a>242     before do
+</span><span class="uncovered0"><a name="line243"></a>243       FakeWeb.register_uri(@token_info_url, :response =&gt; File.dirname(__FILE__)+&quot;/mock responses/token_info.txt&quot;)
+</span><span class="uncovered1"><a name="line244"></a>244       @authsub.token = @token
+</span><span class="uncovered0"><a name="line245"></a>245     end
+</span><span class="uncovered1"><a name="line246"></a>246     
+</span><span class="uncovered0"><a name="line247"></a>247     it &quot;should make request to correct url&quot; do
+</span><span class="uncovered1"><a name="line248"></a>248       FakeWeb.should_receive(:response_for).with(@token_info_url).
+</span><span class="uncovered0"><a name="line249"></a>249           and_return(FakeWeb::Registry.instance.response_for(@token_info_url))
+</span><span class="uncovered1"><a name="line250"></a>250       @authsub.token_info
+</span><span class="uncovered0"><a name="line251"></a>251     end
+</span><span class="uncovered1"><a name="line252"></a>252     
+</span><span class="uncovered0"><a name="line253"></a>253     it &quot;should return the info as [:target =&gt; target, :scope=&gt; scope, :secure=&gt; secure]&quot; do
+</span><span class="uncovered1"><a name="line254"></a>254       @authsub.token_info.should == {:target=&gt;'http://www.example.com', 
+</span><span class="uncovered0"><a name="line255"></a>255                                              :scope=&gt;'http://www.google.com/calendar/feeds/', 
+</span><span class="uncovered1"><a name="line256"></a>256                                              :secure=&gt;true}                                          
+</span><span class="uncovered0"><a name="line257"></a>257     end
+</span><span class="uncovered1"><a name="line258"></a>258     
+</span><span class="uncovered0"><a name="line259"></a>259     it &quot;should throw an error on an incorrect response from Google&quot; do
+</span><span class="uncovered1"><a name="line260"></a>260       FakeWeb.register_uri(@token_info_url, :response =&gt; File.dirname(__FILE__)+&quot;/mock responses/bad_token_info.txt&quot;)
+</span><span class="uncovered0"><a name="line261"></a>261       lambda{
+</span><span class="uncovered1"><a name="line262"></a>262         @authsub.token_info
+</span><span class="uncovered0"><a name="line263"></a>263       }.should raise_error(AuthSubError)
+</span><span class="uncovered1"><a name="line264"></a>264     end
+</span><span class="uncovered0"><a name="line265"></a>265   end
+</span><span class="uncovered1"><a name="line266"></a>266 
+</span><span class="uncovered0"><a name="line267"></a>267 
+</span><span class="uncovered1"><a name="line268"></a>268   describe &quot;GET data from google using the token&quot; do
+</span><span class="uncovered0"><a name="line269"></a>269     before do
+</span><span class="uncovered1"><a name="line270"></a>270       FakeWeb.register_uri(@data_request_url, :response =&gt; File.dirname(__FILE__)+&quot;/mock responses/calendar.txt&quot;)
+</span><span class="uncovered0"><a name="line271"></a>271     end
+</span><span class="uncovered1"><a name="line272"></a>272     
+</span><span class="uncovered0"><a name="line273"></a>273     it &quot;should append the scope to the url when it does not start with http://&quot; do
+</span><span class="uncovered1"><a name="line274"></a>274       FakeWeb.should_receive(:response_for).with(@data_request_url).
+</span><span class="uncovered0"><a name="line275"></a>275         and_return(FakeWeb::Registry.instance.response_for(@data_request_url))
+</span><span class="uncovered1"><a name="line276"></a>276       @authsub.get(&quot;/default/private/full&quot;)
+</span><span class="uncovered0"><a name="line277"></a>277     end
+</span><span class="uncovered1"><a name="line278"></a>278     
+</span><span class="uncovered0"><a name="line279"></a>279     it &quot;should raise errors if there is an error in the response&quot; do 
+</span><span class="uncovered1"><a name="line280"></a>280       FakeWeb.register_uri(@data_request_url, :response =&gt; File.dirname(__FILE__)+&quot;/mock responses/unauthorized.txt&quot;)
+</span><span class="uncovered0"><a name="line281"></a>281       lambda{@authsub.get(@data_request_url)}.should raise_error(Net::HTTPServerException)
+</span><span class="uncovered1"><a name="line282"></a>282     end
+</span><span class="uncovered0"><a name="line283"></a>283     
+</span><span class="uncovered1"><a name="line284"></a>284     it &quot;should pass the entire response as a Net::HTTPResponse object&quot; do
+</span><span class="uncovered0"><a name="line285"></a>285       @authsub.get(@data_request_url).should be_a_kind_of(Net::HTTPResponse)
+</span><span class="uncovered1"><a name="line286"></a>286     end
+</span><span class="uncovered0"><a name="line287"></a>287     
+</span><span class="uncovered1"><a name="line288"></a>288     it &quot;should have the correct body&quot; do
+</span><span class="uncovered0"><a name="line289"></a>289       @authsub.get(@data_request_url).body.should == &quot;This is my wonderful calendar!\nEmpty as usual.\nHire me!!&quot;
+</span><span class="uncovered1"><a name="line290"></a>290     end
+</span><span class="uncovered0"><a name="line291"></a>291   end
+</span><span class="uncovered1"><a name="line292"></a>292   
+</span><span class="uncovered0"><a name="line293"></a>293   describe &quot;POST Data to Google using the token&quot; do
+</span><span class="uncovered1"><a name="line294"></a>294       before do
+</span><span class="uncovered0"><a name="line295"></a>295          FakeWeb.register_uri(@data_request_url, :response =&gt; File.dirname(__FILE__)+&quot;/mock responses/calendar.txt&quot;)
+</span><span class="uncovered1"><a name="line296"></a>296       end 
+</span><span class="uncovered0"><a name="line297"></a>297 
+</span><span class="uncovered1"><a name="line298"></a>298       it &quot;should append the scope to the url when it does not start with http://&quot; do
+</span><span class="uncovered0"><a name="line299"></a>299         FakeWeb.should_receive(:response_for).with(@data_request_url).
+</span><span class="uncovered1"><a name="line300"></a>300           and_return(FakeWeb::Registry.instance.response_for(@data_request_url))
+</span><span class="uncovered0"><a name="line301"></a>301         @authsub.post(&quot;/default/private/full&quot;)
+</span><span class="uncovered1"><a name="line302"></a>302       end
+</span><span class="uncovered0"><a name="line303"></a>303 
+</span><span class="uncovered1"><a name="line304"></a>304       it &quot;should raise errors if there is an error in the response&quot; do 
+</span><span class="uncovered0"><a name="line305"></a>305         FakeWeb.register_uri(@data_request_url, :response =&gt; File.dirname(__FILE__)+&quot;/mock responses/unauthorized.txt&quot;)
+</span><span class="uncovered1"><a name="line306"></a>306         lambda{@authsub.post(@data_request_url)}.should raise_error(Net::HTTPServerException)
+</span><span class="uncovered0"><a name="line307"></a>307       end
+</span><span class="uncovered1"><a name="line308"></a>308 
+</span><span class="uncovered0"><a name="line309"></a>309       it &quot;should pass the entire response as a Net::HTTPResponse object&quot; do
+</span><span class="uncovered1"><a name="line310"></a>310         @authsub.post(@data_request_url).should be_a_kind_of(Net::HTTPResponse)
+</span><span class="uncovered0"><a name="line311"></a>311       end
+</span><span class="uncovered1"><a name="line312"></a>312 
+</span><span class="uncovered0"><a name="line313"></a>313       it &quot;should have the correct body&quot; do
+</span><span class="uncovered1"><a name="line314"></a>314         @authsub.post(@data_request_url).body.should == &quot;This is my wonderful calendar!\nEmpty as usual.\nHire me!!&quot;
+</span><span class="uncovered0"><a name="line315"></a>315       end
+</span><span class="uncovered1"><a name="line316"></a>316   end
+</span><span class="uncovered0"><a name="line317"></a>317   
+</span><span class="uncovered1"><a name="line318"></a>318   describe &quot;PUT to Google using the token&quot; do
+</span><span class="uncovered0"><a name="line319"></a>319        before do
+</span><span class="uncovered1"><a name="line320"></a>320           FakeWeb.register_uri(@data_request_url, :response =&gt; File.dirname(__FILE__)+&quot;/mock responses/calendar.txt&quot;)
+</span><span class="uncovered0"><a name="line321"></a>321        end 
+</span><span class="uncovered1"><a name="line322"></a>322        
+</span><span class="uncovered0"><a name="line323"></a>323        it &quot;should recieve a PUT&quot; do
+</span><span class="uncovered1"><a name="line324"></a>324              FakeWeb.should_receive(:response_for).with(@data_request_url).
+</span><span class="uncovered0"><a name="line325"></a>325                and_return(FakeWeb::Registry.instance.response_for(@data_request_url))
+</span><span class="uncovered1"><a name="line326"></a>326              @authsub.put(@data_request_url)
+</span><span class="uncovered0"><a name="line327"></a>327       end
+</span><span class="uncovered1"><a name="line328"></a>328    end
+</span><span class="uncovered0"><a name="line329"></a>329    
+</span><span class="uncovered1"><a name="line330"></a>330    describe &quot;DELETE request to Google using the token&quot; do
+</span><span class="uncovered0"><a name="line331"></a>331         before do
+</span><span class="uncovered1"><a name="line332"></a>332            FakeWeb.register_uri(@data_request_url, :response =&gt; File.dirname(__FILE__)+&quot;/mock responses/calendar.txt&quot;)
+</span><span class="uncovered0"><a name="line333"></a>333         end 
+</span><span class="uncovered1"><a name="line334"></a>334         it &quot;should recieve a DELETE&quot; do
+</span><span class="uncovered0"><a name="line335"></a>335           FakeWeb.should_receive(:response_for).with(@data_request_url).
+</span><span class="uncovered1"><a name="line336"></a>336             and_return(FakeWeb::Registry.instance.response_for(@data_request_url))
+</span><span class="uncovered0"><a name="line337"></a>337           @authsub.delete(@data_request_url)
+</span><span class="uncovered1"><a name="line338"></a>338         end
+</span><span class="uncovered0"><a name="line339"></a>339     end
+</span><span class="uncovered1"><a name="line340"></a>340 end
 </span></pre><hr/>
     <p>Generated using the <a href='http://eigenclass.org/hiki.rb?rcov'>rcov code coverage analysis tool for Ruby</a>
    version 0.8.1.2.</p>

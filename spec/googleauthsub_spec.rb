@@ -127,14 +127,11 @@ describe GoogleAuthSub do
     end
     
     before do
-       Time.stub!(:now).and_return(Time.local(2008,"mar",8,12,15,1))
+       Time.stub!(:now).and_return(Time.local(2008,"mar",8,12,15,1)) # == 1204942501 
        OpenSSL::BN.stub!(:rand_range).and_return(100000000000000)
        FakeWeb.register_uri(@data_request_url, :response => File.dirname(__FILE__)+"/mock responses/calendar.txt")
        @authsub.secure = true
-       @authsub.token = @token 
-       @header = @authsub.auth_header(Net::HTTP::Get, @data_request_url)
-       @data = @authsub.auth_data(Net::HTTP::Get, @data_request_url) 
-       @sig = @authsub.sig(@header)
+       @authsub.token = @token
     end
     
     it "should have a signing algorithm" do
@@ -147,21 +144,14 @@ describe GoogleAuthSub do
     
     it "should generate a correct authorization header when not secure" do
       @authsub.secure = false
-      @authsub.auth_header(Net::HTTP::Get, @data_request_url).should == "AuthSub token=\"#{@token}\""
+      @authsub.auth_header(Net::HTTP::Get.new(@data_request_url), @data_request_url).should == "AuthSub token=\"#{@token}\""
     end
     
     it "should generate a correct authorization header when secure" do
-       @authsub.auth_header(Net::HTTP::Get, @data_request_url).should match(/AuthSub token="#{@token}" sigalg="rsa-sha1" data="(.)*" sig=(.)*$/)
-    end
-     
-    it "should have a valid data section in authorization header" do
-      @authsub.auth_data(Net::HTTP::Get, @data_request_url).should match(/^GET #{@data_request_url} #{Time.now.to_i} 100000000000000$/)
+      @authsub.auth_header(Net::HTTP::Get.new(@data_request_url), @data_request_url).should == 
+      "AuthSub token=\"CMScoaHmDxC80Y2pAg\" data=\"GET http://www.google.com/calendar/feeds/default/private/full 1204942501 100000000000000\" sig=\"5H44KRwb+B9dMraK0mxsVv3aSF+gCz1hz7FEMViYdl89rC/BXQkmW7Xb9/Xf\n226E5Q+RPtFd+DaK/mXFxtoOJBqlz7mZgV+QOrr/dxCM6HpjIpxF9Qxo9zCT\nKvz0IS4gxXCVMgEgJOdF3YjqZo2bMgiG/Wjm/774Yitkc2tKhL8=\n\" sigalg=\"rsa-sha1\""  
     end
     
-    it "should generate the correct signature for the token" do
-      @sig.should == Base64.b64encode(@private_key.sign(OpenSSL::Digest::SHA1.new,@data))
-      #@public_key.verify(OpenSSL::Digest::SHA1.new, Base64.decode64(@sig), @data).should be_true
-    end
     
     it "should take private key as a  file" do
       f = File.open(File.dirname(__FILE__)+"/mock_certs/test_private_key.pem")
@@ -275,7 +265,7 @@ describe GoogleAuthSub do
   end
 
 
-  describe "Get data from google using the token" do
+  describe "GET data from google using the token" do
     before do
       FakeWeb.register_uri(@data_request_url, :response => File.dirname(__FILE__)+"/mock responses/calendar.txt")
     end
@@ -300,7 +290,7 @@ describe GoogleAuthSub do
     end
   end
   
-  describe "Post Data to Goole using the token" do
+  describe "POST Data to Google using the token" do
       before do
          FakeWeb.register_uri(@data_request_url, :response => File.dirname(__FILE__)+"/mock responses/calendar.txt")
       end 
@@ -325,5 +315,26 @@ describe GoogleAuthSub do
       end
   end
   
-  
+  describe "PUT to Google using the token" do
+       before do
+          FakeWeb.register_uri(@data_request_url, :response => File.dirname(__FILE__)+"/mock responses/calendar.txt")
+       end 
+       
+       it "should recieve a PUT" do
+             FakeWeb.should_receive(:response_for).with(@data_request_url).
+               and_return(FakeWeb::Registry.instance.response_for(@data_request_url))
+             @authsub.put(@data_request_url)
+      end
+   end
+   
+   describe "DELETE request to Google using the token" do
+        before do
+           FakeWeb.register_uri(@data_request_url, :response => File.dirname(__FILE__)+"/mock responses/calendar.txt")
+        end 
+        it "should recieve a DELETE" do
+          FakeWeb.should_receive(:response_for).with(@data_request_url).
+            and_return(FakeWeb::Registry.instance.response_for(@data_request_url))
+          @authsub.delete(@data_request_url)
+        end
+    end
 end

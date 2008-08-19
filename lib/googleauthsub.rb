@@ -71,7 +71,7 @@ class GoogleAuthSub
          # Get key from a PEM in the form of a string.
          @@pkey = OpenSSL::PKey::RSA.new(key)
        else
-         raise AuthSubError, "Private Key in wrong format. Require IO, String or OpenSSL::Pkey::RSA, got #{key.class}"
+         raise AuthSubError, "Private Key in wrong format. Require IO, String or OpenSSL::Pkey::RSA, you gave me #{key.class}"
      end
   end
 
