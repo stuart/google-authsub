@@ -26,7 +26,7 @@ require 'fake_web'
 require 'net/http'
 require 'openssl'
 
-include GData 
+include GData
 
 describe GoogleAuthSub do
 
@@ -60,8 +60,8 @@ describe GoogleAuthSub do
       @authsub.should respond_to(:request_url)
     end
 
-    it "should have a get_session_token method" do
-      @authsub.should respond_to(:session_token)
+    it "should have a request_session_token method" do
+      @authsub.should respond_to(:request_session_token)
     end
 
     it "should have an revoke_token method" do
@@ -191,7 +191,7 @@ describe GoogleAuthSub do
     it "should make request to correct url" do
       FakeWeb.should_receive(:response_for).with(@session_token_request_url).
       and_return(FakeWeb::Registry.instance.response_for(@session_token_request_url))
-      @authsub.session_token
+      @authsub.request_session_token
     end
 
   end
@@ -202,7 +202,7 @@ describe GoogleAuthSub do
     end
     
     it "should set session_token in session to correct value" do
-      @authsub.session_token
+      @authsub.request_session_token
       @authsub.token.should == @session_token
     end
   end
@@ -211,7 +211,7 @@ describe GoogleAuthSub do
       it "should raise a server exception error" do
         FakeWeb.register_uri(@session_token_request_url, :response =>  File.dirname(__FILE__)+"/mock responses/revoked_token.txt")
         lambda {
-          @authsub.session_token
+          @authsub.request_session_token
         }.should raise_error(AuthSubError)
       end
   end

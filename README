@@ -39,8 +39,8 @@ Non-signed access, single request.
             auth.token=params[:token]
  
     4. Now everything should be set to make a single request with:
-        auth.get(url) or auth.post(url)
-       The url will have the :scope_url prepended to it if not included. 
+        auth.get(url), auth.post(url), auth.put(url) or auth.delete(url)
+       The url will automagically have the :scope_url prepended to it if not included. 
        These calls return a Net::HTTPResponse object
        
      Once a request has been made the token will no longer be valid and you will have to start from step 2 in 
@@ -55,7 +55,8 @@ Non-signed access with session token.
     2,3 as per previous example
     
     4. Exchange the single use token for a session token.
-        auth.session_token
+        auth.request_session_token
+        NOTE: this has changed from the previous version, which was confusingly named session_token.
         
     5. Make requests with auth.get and auth.put.
     

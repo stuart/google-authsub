@@ -2,8 +2,8 @@ require 'rake'
 
 Gem::Specification.new do |s|
    s.name = %q{google-authsub}
-   s.version = "0.0.2"
-   s.date = %q{2008-03-17}
+   s.version = "0.0.3"
+   s.date = %q{2008-08-22}
    s.authors = ["Stuart Coyle"]
    s.email = %q{stuart.coyle@gmail.com}
    s.summary = %q{A ruby implementation of Google Authentication for Web Applications API}

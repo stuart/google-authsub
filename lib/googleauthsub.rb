@@ -25,7 +25,7 @@ require 'net/https'
 require 'openssl'
 require 'base64'
 
-# Note: The module declared here may change depending on what other developers are using
+# Note: The module declared here may change depending on what other developers are using.
 #
 module GData
     GOOGLE_HOST_URL = "www.google.com"
@@ -93,7 +93,6 @@ class GoogleAuthSub
 
   # This returns a URI::HTTPS object which contains the Google url to request a token from.
   def request_url
-     #FIXME: these currently cause a crash.
      raise AuthSubError, "Invalid next URL: #{@next_url}" if !full_url?(@next_url)
      raise AuthSubError, "Invalid scope URL: #{@scope}" if !full_url?(@scope)
      query = "next=" << @next_url << "&scope=" << @scope << "&session="<<
@@ -111,9 +110,9 @@ class GoogleAuthSub
   # +GoogleAuthsub#token=params[:token]+
   #
   def receive_token(url)
-    puts url
-    q = url.query.match( /.*token=(.*)/i)
-    @token = q[1] if !q.nil?
+      raise AuthSubError, "receive_token was not passed a url, #{@url.class} received." if !url.class == URI::HTTP
+      q = url.query.match( /.*token=(.*)/i) if !url.query.nil?
+      @token = q[1] if !q.nil?
   end
 
   # Returns true if this token can be exchanged for a session token
@@ -126,10 +125,10 @@ class GoogleAuthSub
     secure == true
   end
 
-  # session_token
+  # request_session_token
   # This method exchanges a previously received single use token with a session token.
   # Raises error if an invalid response is received.
-  def session_token
+  def request_session_token
     url =  URI::HTTPS.build({:host => GOOGLE_HOST_URL,
         :path => GOOGLE_AUTHSUB_SESSION_TOKEN_PATH})
     begin
@@ -265,3 +264,4 @@ class GoogleAuthSub
 end
 
 end
+
