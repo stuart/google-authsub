@@ -1,0 +1,40 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+   "http://www.w3.org/TR/html4/strict.dtd">
+
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>authsub_test</title>
+	<meta name="generator" content="TextMate http://macromates.com/">
+	<meta name="author" content="stuart">
+	<!-- Date: 2008-08-20 -->
+</head>
+<body>
+    <h2>Google Authsub Test</h2>
+    <p>These pages test the Ruby google-authsub library and explain how to use it.</p>
+    <h3>STEP 1: <i>Request a token from Google</i></h3>
+    <p>For a web app to access Google's services. We need to get an authorization token from Google.</p>
+    
+    <p>We will create our GoogleAuthSub object something like this:</p>
+       <p> <code>auth = GoogleAuthSub.new(:next_url=>"http://www.schedy.com/test2.html, :session=>false, :secure=>false, :scope=>"http://google.com/calendar/feeds")</code>
+    </p>
+    <p>The url to redirect to is found from <code>auth.request_url</code>. It is then up to the application to perform this redirect.
+    </p>
+    <p>If the request is successful and the user logs in correctly, the user will be redirected back to the <code>auth.next_url</code>
+    </p>
+    <p>To try it, use the form below and press 'Continue'</p>
+    <form action="authsub_test_2" method="get" accept-charset="utf-8">
+    <h3>Google Authsub Token Attributes</h3>
+    <b>Token Type</b><p>If session is selected, the token will be able to be exchanged for a session (i.e. multiple use) token.</p><nbsp> 
+    Session:<input type="radio" name="session" value="true" id="session">
+    Single Use:<input type="radio" name="session" value="false" id="session" checked="true"><br/><br/>
+    <b>Secure (use https)</b><p>If secure=true, this token will be used for secure exchanges using https. The web application site must be registered with Google and have the correct certificate for this to work.</p><nbsp>
+    True<input type="radio" name="secure" value="true" id="session">
+    False<input type="radio" name="secure" value="false" id="session" checked="true"><br/><br/>
+    <b>Scope:</b>
+    <input type="text" name="scope" value="http://google.com/calendar/feeds" id="scope" size="60">
+    <p><input type="submit" value="Continue &rarr;"></p>
+</form>
+<div id=request_url></div>
+</body>
+</html>

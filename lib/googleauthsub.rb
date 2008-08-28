@@ -24,6 +24,7 @@ require 'uri'
 require 'net/https'
 require 'openssl'
 require 'base64'
+require 'cgi'
 
 # Note: The module declared here may change depending on what other developers are using.
 #
@@ -95,7 +96,7 @@ class GoogleAuthSub
   def request_url
      raise AuthSubError, "Invalid next URL: #{@next_url}" if !full_url?(@next_url)
      raise AuthSubError, "Invalid scope URL: #{@scope}" if !full_url?(@scope)
-     query = "next=" << @next_url << "&scope=" << @scope << "&session="<<
+     query = "next=" << CGI.escape(@next_url) << "&scope=" << CGI.escape(@scope) << "&session="<<
              (session_token? ? '1' : '0')<< "&secure="<< (secure_token? ? '1' : '0')
      query = URI.encode(query)
      URI::HTTPS.build({:host => GOOGLE_HOST_URL, :path => GOOGLE_AUTHSUB_REQUEST_PATH, :query => query })
@@ -110,7 +111,7 @@ class GoogleAuthSub
   # +GoogleAuthsub#token=params[:token]+
   #
   def receive_token(url)
-      raise AuthSubError, "receive_token was not passed a url, #{@url.class} received." if !url.class == URI::HTTP
+      raise AuthSubError, "receive_token() was not passed a url, #{@url.class} received instead." if !url.class == URI::HTTP
       q = url.query.match( /.*token=(.*)/i) if !url.query.nil?
       @token = q[1] if !q.nil?
   end
@@ -171,7 +172,7 @@ class GoogleAuthSub
     return info
   end
 
-  # get +url+
+  # get +url+s
   # Does a HTTP GET request to Google using the AuthSub token.
   # This returns a Net::HTTPResponse object.
   def get(url)
@@ -245,7 +246,7 @@ class GoogleAuthSub
       data = request.method + ' ' + url.to_s + ' ' + timestamp.to_s + ' ' + nonce.to_s
       digest = OpenSSL::Digest::SHA1.new(data).hexdigest
       sig = [@@pkey.private_encrypt(digest)].pack("m")  #Base64 encode
-      return "AuthSub token=\"#{@token}\" data=\"#{data}\" sig=\"#{sig}\" sigalg=\"#{sigalg}\""
+      return "AuthSub token=\"#{@token}\" data=\"#{data}\" sig=\"#{sig}\" sigalg=\"#{@sigalg}\""
     end
   end
   
