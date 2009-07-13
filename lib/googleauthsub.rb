@@ -29,6 +29,7 @@ require 'cgi'
 # Note: The module declared here may change depending on what other developers are using.
 #
 module GData
+  
     GOOGLE_HOST_URL = "www.google.com"
     GOOGLE_AUTHSUB_BASE_PATH = "/accounts"
     GOOGLE_AUTHSUB_REQUEST_PATH = GOOGLE_AUTHSUB_BASE_PATH + "/AuthSubRequest"
@@ -61,6 +62,7 @@ class GoogleAuthSub
   #   http://code.google.com/apis/accounts/docs/RegistrationForWebAppsAuto.html
   #
   # This sets the class variable @@pkey to an OpenSSL::Pkey::RSA object
+  # 
   def self.set_private_key(key)
      case key
        when OpenSSL::PKey::RSA
@@ -96,7 +98,7 @@ class GoogleAuthSub
   def request_url
      raise AuthSubError, "Invalid next URL: #{@next_url}" if !full_url?(@next_url)
      raise AuthSubError, "Invalid scope URL: #{@scope}" if !full_url?(@scope)
-     query = "next=" << CGI.escape(@next_url) << "&scope=" << CGI.escape(@scope) << "&session="<<
+     query = "next=" << @next_url << "&scope=" << @scope << "&session="<<
              (session_token? ? '1' : '0')<< "&secure="<< (secure_token? ? '1' : '0')
      query = URI.encode(query)
      URI::HTTPS.build({:host => GOOGLE_HOST_URL, :path => GOOGLE_AUTHSUB_REQUEST_PATH, :query => query })
@@ -130,13 +132,14 @@ class GoogleAuthSub
   # This method exchanges a previously received single use token with a session token.
   # Raises error if an invalid response is received.
   def request_session_token
-    url =  URI::HTTPS.build({:host => GOOGLE_HOST_URL,
+   url =  URI::HTTPS.build({:host => GOOGLE_HOST_URL,
         :path => GOOGLE_AUTHSUB_SESSION_TOKEN_PATH})
-    begin
-     @token = get(url).body.match(/^Token=(.*)$/)[1]
+   begin
+     response = get(url)
    rescue
      raise AuthSubError, "Invalid session token response."
-   end
+   end 
+   @token = response.body.match(/^Token=(.*)$/)[1]
   end
 
   # revoke_token
@@ -147,7 +150,7 @@ class GoogleAuthSub
     url = URI::HTTPS.build({:host=>GOOGLE_HOST_URL,
       :path => GOOGLE_AUTHSUB_REVOKE_PATH})
     begin
-     get(url)
+     response = get(url)
      true
     rescue
      false
@@ -219,7 +222,7 @@ class GoogleAuthSub
     end
 
     if method.superclass != Net::HTTPRequest
-      raise AuthSubError, "method must be a Net::HTTPRequest subclass. #{method} received."
+      raise AuthSubError, "method must be a Net::HTTPRequest subclass (GET POST PUT DELETE). #{method} received."
     end
     request = method.new(url.path)
     request['Authorization'] = authorization_header(request, url)

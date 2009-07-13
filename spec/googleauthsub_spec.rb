@@ -52,6 +52,9 @@ describe GoogleAuthSub do
     @data_request_url = @test_scope_url + "/default/private/full"
 
     @authsub = GoogleAuthSub.new({:next_url => @test_next_url, :scope_url => @test_scope_url})
+    
+    # Disable real network access
+    FakeWeb.allow_net_connect = false
   end
 
   describe "Methods GoogleAuthsubToken should have" do
@@ -129,7 +132,7 @@ describe GoogleAuthSub do
     before do
        Time.stub!(:now).and_return(Time.local(2008,"mar",8,12,15,1)) # == 1204942501 
        OpenSSL::BN.stub!(:rand_range).and_return(100000000000000)
-       FakeWeb.register_uri(@data_request_url, :response => File.dirname(__FILE__)+"/mock responses/calendar.txt")
+       FakeWeb.register_uri(:any, @data_request_url, :response => File.dirname(__FILE__)+"/mock responses/calendar.txt")
        @authsub.secure = true
        @authsub.token = @token
     end
@@ -185,20 +188,18 @@ describe GoogleAuthSub do
 
   describe "Getting a session token from google" do
     before do
-      FakeWeb.register_uri(@session_token_request_url, :response => File.dirname(__FILE__)+"/mock responses/session_token.txt")
+      FakeWeb.register_uri(:get, @session_token_request_url, :response => File.dirname(__FILE__)+"/mock responses/session_token.txt")
     end
     
     it "should make request to correct url" do
-      FakeWeb.should_receive(:response_for).with(@session_token_request_url).
-      and_return(FakeWeb::Registry.instance.response_for(@session_token_request_url))
-      @authsub.request_session_token
+      @authsub.request_session_token.should be true
     end
 
   end
 
   describe "Succesful receipt of a session token" do
     before do
-      FakeWeb.register_uri(@session_token_request_url, :response =>  File.dirname(__FILE__)+"/mock responses/session_token.txt")
+      FakeWeb.register_uri(:any,@session_token_request_url, :response =>  File.dirname(__FILE__)+"/mock responses/session_token.txt")
     end
     
     it "should set session_token in session to correct value" do
@@ -209,7 +210,7 @@ describe GoogleAuthSub do
 
   describe "Unsuccessful request for session token - revoked token" do
       it "should raise a server exception error" do
-        FakeWeb.register_uri(@session_token_request_url, :response =>  File.dirname(__FILE__)+"/mock responses/revoked_token.txt")
+        FakeWeb.register_uri(:get,@session_token_request_url, :response =>  File.dirname(__FILE__)+"/mock responses/revoked_token.txt")
         lambda {
           @authsub.request_session_token
         }.should raise_error(AuthSubError)
@@ -218,36 +219,28 @@ describe GoogleAuthSub do
 
   describe "Revoking a session token" do
     before do
-      FakeWeb.register_uri(@token_revoke_url, :response => File.dirname(__FILE__)+"/mock responses/revoke_token.txt")
+      FakeWeb.register_uri(:get, @token_revoke_url, :response => File.dirname(__FILE__)+"/mock responses/revoke_token.txt")
       @authsub.token = @token
     end
     
     it "should make request to correct url" do
-       FakeWeb.should_receive(:response_for).with(@token_revoke_url).
-       and_return(FakeWeb::Registry.instance.response_for(@token_revoke_url))
-       @authsub.revoke_token
-     end
-     
-     it "should return true" do
-      @authsub.revoke_token.should be_true
+       @authsub.revoke_token.should be_true
      end
      
      it "should return false on an error" do
-       FakeWeb.register_uri(@token_revoke_url, :response => File.dirname(__FILE__)+"/mock responses/unauthorized.txt")
+       FakeWeb.register_uri(:get, @token_revoke_url, :response => File.dirname(__FILE__)+"/mock responses/unauthorized.txt")
        @authsub.revoke_token.should be_false
      end
   end
 
   describe "Getting token info from google" do
     before do
-      FakeWeb.register_uri(@token_info_url, :response => File.dirname(__FILE__)+"/mock responses/token_info.txt")
+      FakeWeb.register_uri(:get,@token_info_url, :response => File.dirname(__FILE__)+"/mock responses/token_info.txt")
       @authsub.token = @token
     end
     
     it "should make request to correct url" do
-      FakeWeb.should_receive(:response_for).with(@token_info_url).
-          and_return(FakeWeb::Registry.instance.response_for(@token_info_url))
-      @authsub.token_info
+      @authsub.token_info.should be_true
     end
     
     it "should return the info as [:target => target, :scope=> scope, :secure=> secure]" do
@@ -257,7 +250,7 @@ describe GoogleAuthSub do
     end
     
     it "should throw an error on an incorrect response from Google" do
-      FakeWeb.register_uri(@token_info_url, :response => File.dirname(__FILE__)+"/mock responses/bad_token_info.txt")
+      FakeWeb.register_uri(:get,@token_info_url, :response => File.dirname(__FILE__)+"/mock responses/bad_token_info.txt")
       lambda{
         @authsub.token_info
       }.should raise_error(AuthSubError)
@@ -267,17 +260,17 @@ describe GoogleAuthSub do
 
   describe "GET data from google using the token" do
     before do
-      FakeWeb.register_uri(@data_request_url, :response => File.dirname(__FILE__)+"/mock responses/calendar.txt")
+      FakeWeb.register_uri(:get, @data_request_url, :response => File.dirname(__FILE__)+"/mock responses/calendar.txt")
     end
     
     it "should append the scope to the url when it does not start with http://" do
-      FakeWeb.should_receive(:response_for).with(@data_request_url).
-        and_return(FakeWeb::Registry.instance.response_for(@data_request_url))
-      @authsub.get("/default/private/full")
+      lambda do
+        @authsub.get("/default/private/full")
+      end.should_not raise_error
     end
     
     it "should raise errors if there is an error in the response" do 
-      FakeWeb.register_uri(@data_request_url, :response => File.dirname(__FILE__)+"/mock responses/unauthorized.txt")
+      FakeWeb.register_uri(:get,@data_request_url, :response => File.dirname(__FILE__)+"/mock responses/unauthorized.txt")
       lambda{@authsub.get(@data_request_url)}.should raise_error(Net::HTTPServerException)
     end
     
@@ -292,17 +285,17 @@ describe GoogleAuthSub do
   
   describe "POST Data to Google using the token" do
       before do
-         FakeWeb.register_uri(@data_request_url, :response => File.dirname(__FILE__)+"/mock responses/calendar.txt")
+         FakeWeb.register_uri(:post ,@data_request_url, :response => File.dirname(__FILE__)+"/mock responses/calendar.txt")
       end 
 
       it "should append the scope to the url when it does not start with http://" do
-        FakeWeb.should_receive(:response_for).with(@data_request_url).
-          and_return(FakeWeb::Registry.instance.response_for(@data_request_url))
-        @authsub.post("/default/private/full")
+        lambda do
+          @authsub.post("/default/private/full") 
+         end.should_not raise_error
       end
 
       it "should raise errors if there is an error in the response" do 
-        FakeWeb.register_uri(@data_request_url, :response => File.dirname(__FILE__)+"/mock responses/unauthorized.txt")
+        FakeWeb.register_uri(:post, @data_request_url, :response => File.dirname(__FILE__)+"/mock responses/unauthorized.txt")
         lambda{@authsub.post(@data_request_url)}.should raise_error(Net::HTTPServerException)
       end
 
@@ -317,24 +310,24 @@ describe GoogleAuthSub do
   
   describe "PUT to Google using the token" do
        before do
-          FakeWeb.register_uri(@data_request_url, :response => File.dirname(__FILE__)+"/mock responses/calendar.txt")
+          FakeWeb.register_uri(:put,@data_request_url, :response => File.dirname(__FILE__)+"/mock responses/calendar.txt")
        end 
        
        it "should recieve a PUT" do
-             FakeWeb.should_receive(:response_for).with(@data_request_url).
-               and_return(FakeWeb::Registry.instance.response_for(@data_request_url))
-             @authsub.put(@data_request_url)
+         lambda do
+          @authsub.put(@data_request_url)
+        end.should_not raise_error
       end
    end
    
    describe "DELETE request to Google using the token" do
         before do
-           FakeWeb.register_uri(@data_request_url, :response => File.dirname(__FILE__)+"/mock responses/calendar.txt")
+           FakeWeb.register_uri(:delete ,@data_request_url, :response => File.dirname(__FILE__)+"/mock responses/calendar.txt")
         end 
         it "should recieve a DELETE" do
-          FakeWeb.should_receive(:response_for).with(@data_request_url).
-            and_return(FakeWeb::Registry.instance.response_for(@data_request_url))
-          @authsub.delete(@data_request_url)
+          lambda do
+            @authsub.delete(@data_request_url)
+          end.should_not raise_error
         end
     end
 end
