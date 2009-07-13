@@ -1,5 +1,5 @@
 # AuthSub - Ruby library for Google Authorization
-# # Copyright 2008 Stuart Coyle <stuart.coyle@gmail.com>
+# # Copyright 2008-2009 Stuart Coyle <stuart.coyle@gmail.com>
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -42,7 +42,7 @@ end
 
 class AuthSubError < Error
   def message
-    "Google Authentication Error"
+    "Google Authentication Error" << " : #{@message}" if @message
   end
 end
 

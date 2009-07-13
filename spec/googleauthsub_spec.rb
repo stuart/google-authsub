@@ -131,7 +131,7 @@ describe GoogleAuthSub do
     
     before do
        Time.stub!(:now).and_return(Time.local(2008,"mar",8,12,15,1)) # == 1204942501 
-       OpenSSL::BN.stub!(:rand_range).and_return(100000000000000)
+       OpenSSL::BN.stub!(:rand_range).and_return(100000000000000) # set our nonce to known value
        FakeWeb.register_uri(:any, @data_request_url, :response => File.dirname(__FILE__)+"/mock responses/calendar.txt")
        @authsub.secure = true
        @authsub.token = @token
@@ -150,12 +150,29 @@ describe GoogleAuthSub do
       @authsub.auth_header(Net::HTTP::Get.new(@data_request_url), @data_request_url).should == "AuthSub token=\"#{@token}\""
     end
     
+
+    it "should have a correct token when secure" do
+      @authsub.auth_header(Net::HTTP::Get.new(@data_request_url), @data_request_url).should include("token=\"#{@token}\"")
+    end   
+    
+    # data = http-method SP http-request-URL SP timestamp SP nonce
+    it "should have a proper data parameter" do
+      @authsub.auth_header(Net::HTTP::Get.new(@data_request_url), @data_request_url).should include("data=\"GET #{@data_request_url} 1204942501 100000000000000\"")
+    end
+    
+    it "should generate the correct signature" do
+      expected_sig = "GET #{@data_request_url} 1204942501 100000000000000"
+      sig = @authsub.auth_header(Net::HTTP::Get.new(@data_request_url), @data_request_url).match(/sig=\"([^\"]*)$/)[1]
+      @public_key.public_decrypt(sig.unpack("m").join).should ==  OpenSSL::Digest::SHA1.new(expected_sig).hexdigest
+    end
+    
     it "should generate a correct authorization header when secure" do
       @authsub.auth_header(Net::HTTP::Get.new(@data_request_url), @data_request_url).should == 
       "AuthSub token=\"CMScoaHmDxC80Y2pAg\" data=\"GET http://www.google.com/calendar/feeds/default/private/full 1204942501 100000000000000\" sig=\"5H44KRwb+B9dMraK0mxsVv3aSF+gCz1hz7FEMViYdl89rC/BXQkmW7Xb9/Xf\n226E5Q+RPtFd+DaK/mXFxtoOJBqlz7mZgV+QOrr/dxCM6HpjIpxF9Qxo9zCT\nKvz0IS4gxXCVMgEgJOdF3YjqZo2bMgiG/Wjm/774Yitkc2tKhL8=\n\" sigalg=\"rsa-sha1\""  
     end
-    
-    
+  end   
+     
+  describe "setting the private key" do
     it "should take private key as a  file" do
       f = File.open(File.dirname(__FILE__)+"/mock_certs/test_private_key.pem")
       GoogleAuthSub.set_private_key(f)
@@ -165,7 +182,6 @@ describe GoogleAuthSub do
       s = File.open(File.dirname(__FILE__)+"/mock_certs/test_private_key.pem").read
       GoogleAuthSub.set_private_key(s)
     end
-    
   end
 
   describe "Token received from Google in response url. Note: in Rails this is simply params[:token]" do

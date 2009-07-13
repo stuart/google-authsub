@@ -2,12 +2,12 @@ require 'rake'
 
 Gem::Specification.new do |s|
    s.name = %q{google-authsub}
-   s.version = "0.0.3"
-   s.date = %q{2008-08-22}
+   s.version = "0.0.4"
+   s.date = %q{2009-07-13}
    s.authors = ["Stuart Coyle"]
    s.email = %q{stuart.coyle@gmail.com}
    s.summary = %q{A ruby implementation of Google Authentication for Web Applications API}
-   s.homepage = %q{http://www.cybertherial.com/authsub}
+   s.homepage = %q{http://github.com/stuart/google-authsub/tree/master}
    s.description = %q{GoogleAuthSub provides the Google Authentications for Web Applications API.}
    s.files = FileList['*.rb','lib/*.rb','spec/*', 'spec/**/*', '[A-Z]*'].to_a
    [ "README","MIT-LICENSE", "googleauthsub.rb", "spec/*"]
