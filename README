@@ -19,7 +19,6 @@ http://groups.google.com/group/Google-Accounts-API
 Requirements:
     For testing you will need the rspec and fake_web gems
     
-    
 To use:
 
 Non-signed access, single request.
