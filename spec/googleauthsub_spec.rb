@@ -170,6 +170,7 @@ describe GoogleAuthSub do
       @authsub.auth_header(Net::HTTP::Get.new(@data_request_url), @data_request_url).should == 
       "AuthSub token=\"CMScoaHmDxC80Y2pAg\" data=\"GET http://www.google.com/calendar/feeds/default/private/full 1204942501 100000000000000\" sig=\"5H44KRwb+B9dMraK0mxsVv3aSF+gCz1hz7FEMViYdl89rC/BXQkmW7Xb9/Xf\n226E5Q+RPtFd+DaK/mXFxtoOJBqlz7mZgV+QOrr/dxCM6HpjIpxF9Qxo9zCT\nKvz0IS4gxXCVMgEgJOdF3YjqZo2bMgiG/Wjm/774Yitkc2tKhL8=\n\" sigalg=\"rsa-sha1\""  
     end
+    
   end   
      
   describe "setting the private key" do

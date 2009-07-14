@@ -16,6 +16,9 @@ http://code.google.com/apis/accounts/docs/AuthForWebApps.html
 The Google Group can provide some help also: 
 http://groups.google.com/group/Google-Accounts-API
 
+The OAuth protocol has taken over much of the role of Authsub. 
+Oauth does not provide access to non registered apps as Authsub does.
+
 Requirements:
     For testing you will need the rspec and fake_web gems
     
@@ -84,12 +87,12 @@ Token information can be received from Google with:
     
     
 TODO:
-    Live tests.
+    Live tests. Currently getting errors with encrypted tokens.
     Storage of session tokens: ActiveRecord
     Encryption of tokens.
-    Session token revokation
+    Session token revocation
     Rails plugin
     
 Contact the author via stuart.coyle@gmail.com
 
-Copyright (c) 2008 Stuart Coyle, released under the MIT license
+Copyright (c) 2008-2009 Stuart Coyle, released under the MIT license
