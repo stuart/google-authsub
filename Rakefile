@@ -11,6 +11,7 @@ begin
     gemspec.homepage = "http://github.com/stuart/google-authsub/tree/master"  
     gemspec.authors = ["Stuart Coyle", "Jesse Storimer"]
   end  
+  Jeweler::GemcutterTasks.new  
 rescue LoadError  
   puts "Jeweler not available. Install it with: sudo gem install technicalpickles-jeweler -s http://gems.github.com"  
 end  
