@@ -7,8 +7,8 @@ begin
     gemspec.name = "google-authsub"  
     gemspec.summary = "A ruby implementation of Google Authentication for Web Applications API"  
     gemspec.description = "GoogleAuthSub provides the Google Authentications for Web Applications API."  
-    gemspec.email = "stuart.coyle@gmail.com"  
-    gemspec.homepage = "http://github.com/stuart/google-authsub/tree/master"  
+    gemspec.email = "jstorimer@gmail.com"  
+    gemspec.homepage = "http://github.com/jstorimer/google-authsub"  
     gemspec.authors = ["Stuart Coyle", "Jesse Storimer"]
   end  
   Jeweler::GemcutterTasks.new  
