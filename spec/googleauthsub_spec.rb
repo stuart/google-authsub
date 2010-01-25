@@ -157,7 +157,7 @@ describe GoogleAuthSub do
     
     # data = http-method SP http-request-URL SP timestamp SP nonce
     it "should have a proper data parameter" do
-      @authsub.auth_header(Net::HTTP::Get.new(@data_request_url), @data_request_url).should include("data=\"GET #{@data_request_url} 1204942501 100000000000000\"")
+      @authsub.auth_header(Net::HTTP::Get.new(@data_request_url), @data_request_url).should include("data=\"GET #{@data_request_url} 1204996501 100000000000000\"")
     end
     
     it "should generate the correct signature" do
